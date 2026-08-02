@@ -5,7 +5,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import {
   ArrowRight, BarChart3, Blocks, Check, ChevronDown, Code2, Gauge,
   Globe2, Layers3, Menu, MonitorSmartphone, Search, ShieldCheck,
-  ShoppingBag, Sparkles, Star, X, Zap,
+  Moon, ShoppingBag, Sparkles, Star, Sun, X, Zap,
 } from "lucide-react";
 
 const navItems = [
@@ -107,12 +107,25 @@ export default function Home() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [testimonial, setTestimonial] = useState(0);
+  const [theme, setTheme] = useState<"dark" | "light">("dark");
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
     onScroll(); window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  useEffect(() => {
+    const current = document.documentElement.dataset.theme === "light" ? "light" : "dark";
+    setTheme(current);
+  }, []);
+
+  const toggleTheme = () => {
+    const next = theme === "dark" ? "light" : "dark";
+    setTheme(next);
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem("apollun-theme", next);
+  };
 
   const quoteCards = [
     ["Clareza em cada decisão", "A estratégia vem antes da estética. Cada escolha existe para orientar o visitante e fortalecer a marca."],
@@ -127,12 +140,15 @@ export default function Home() {
           <a className="brand" href="#inicio" aria-label="Apollun.Dev — início"><img className="brandIcon" src="/apollun-icon.png" alt="" />APOLLUN<span>.DEV</span></a>
           <nav className="navLinks" aria-label="Navegação principal">{navItems.map(([label, href]) => <a href={href} key={href}>{label}</a>)}</nav>
           <div className="navActions">
+            <button className="themeToggle" onClick={toggleTheme} aria-label={theme === "dark" ? "Ativar modo claro" : "Ativar modo escuro"} title={theme === "dark" ? "Modo claro" : "Modo escuro"}>
+              <span>{theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}</span>
+            </button>
             <span className="availability"><i />Disponível agora</span>
             <a className="navCta" href="mailto:contato@apollun.dev?subject=Iniciar%20projeto">Iniciar projeto <ArrowRight size={15} /></a>
           </div>
           <button className="menuButton" onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? "Fechar menu" : "Abrir menu"} aria-expanded={menuOpen}>{menuOpen ? <X /> : <Menu />}</button>
         </div>
-        {menuOpen && <motion.nav className="mobileNav" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}>{navItems.map(([label, href]) => <a href={href} key={href} onClick={() => setMenuOpen(false)}>{label}</a>)}<span className="availability"><i />Disponível agora</span><a href="mailto:contato@apollun.dev?subject=Iniciar%20projeto">Iniciar projeto</a></motion.nav>}
+        {menuOpen && <motion.nav className="mobileNav" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}>{navItems.map(([label, href]) => <a href={href} key={href} onClick={() => setMenuOpen(false)}>{label}</a>)}<button className="mobileThemeToggle" onClick={toggleTheme}>{theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}{theme === "dark" ? "Ativar modo claro" : "Ativar modo escuro"}</button><span className="availability"><i />Disponível agora</span><a href="mailto:contato@apollun.dev?subject=Iniciar%20projeto">Iniciar projeto</a></motion.nav>}
       </header>
 
       <section className="hero" id="inicio">
