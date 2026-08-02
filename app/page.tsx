@@ -9,8 +9,8 @@ import {
 } from "lucide-react";
 
 const navItems = [
-  ["Serviços", "#servicos"], ["Diferenciais", "#diferenciais"],
-  ["Projetos", "#portfolio"], ["Planos", "#planos"], ["FAQ", "#faq"],
+  ["Serviços", "#servicos"], ["Projetos", "#portfolio"],
+  ["Processo", "#processo"], ["Sobre", "#diferenciais"],
 ];
 
 const clients = ["Clínicas", "Advogados", "Restaurantes", "Imobiliárias", "Academias", "Empresas", "Prestadores"];
@@ -126,10 +126,13 @@ export default function Home() {
         <div className="navInner">
           <a className="brand" href="#inicio" aria-label="Apollun.Dev — início"><img className="brandIcon" src="/apollun-icon.png" alt="" />APOLLUN<span>.DEV</span></a>
           <nav className="navLinks" aria-label="Navegação principal">{navItems.map(([label, href]) => <a href={href} key={href}>{label}</a>)}</nav>
-          <a className="navCta" href="mailto:contato@apollun.dev?subject=Solicitar%20orçamento">Solicitar orçamento <ArrowRight size={15} /></a>
+          <div className="navActions">
+            <span className="availability"><i />Disponível agora</span>
+            <a className="navCta" href="mailto:contato@apollun.dev?subject=Iniciar%20projeto">Iniciar projeto <ArrowRight size={15} /></a>
+          </div>
           <button className="menuButton" onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? "Fechar menu" : "Abrir menu"} aria-expanded={menuOpen}>{menuOpen ? <X /> : <Menu />}</button>
         </div>
-        {menuOpen && <motion.nav className="mobileNav" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}>{navItems.map(([label, href]) => <a href={href} key={href} onClick={() => setMenuOpen(false)}>{label}</a>)}<a href="mailto:contato@apollun.dev?subject=Solicitar%20orçamento">Solicitar orçamento</a></motion.nav>}
+        {menuOpen && <motion.nav className="mobileNav" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}>{navItems.map(([label, href]) => <a href={href} key={href} onClick={() => setMenuOpen(false)}>{label}</a>)}<span className="availability"><i />Disponível agora</span><a href="mailto:contato@apollun.dev?subject=Iniciar%20projeto">Iniciar projeto</a></motion.nav>}
       </header>
 
       <section className="hero" id="inicio">
