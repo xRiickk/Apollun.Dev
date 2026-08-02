@@ -16,6 +16,11 @@ export async function generateMetadata(): Promise<Metadata> {
     metadataBase: base,
     title: "Apollun.Dev — Transformando ideias em experiências digitais",
     description: "Desenvolvimento web, landing pages, UX/UI, SEO, sistemas e lojas virtuais com estratégia, performance e design premium.",
+    icons: {
+      icon: [{ url: "/apollun-icon.png", type: "image/png" }],
+      shortcut: "/apollun-icon.png",
+      apple: "/apollun-icon.png",
+    },
     openGraph: {
       title: "Apollun.Dev — Transformando ideias em experiências digitais",
       description: "Estratégia, design e tecnologia para criar negócios digitais mais fortes.",
