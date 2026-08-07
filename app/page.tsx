@@ -54,6 +54,12 @@ const faq = [
   ["A Apollun oferece suporte depois da entrega?", "Sim. Podemos acompanhar o projeto após o lançamento com manutenção, melhorias e novas funcionalidades conforme sua operação evolui."],
 ];
 
+const showcaseProjects = [
+  { name: "Pulsar Saúde", category: "Clínica digital", title: "Cuidado simples.", highlight: "Experiência humana.", description: "Agendamentos, especialidades e confiança em uma jornada sem atritos.", score: "98", metric: "SEO 100", theme: "health" },
+  { name: "Nexo Imóveis", category: "Portal imobiliário", title: "Encontre o espaço.", highlight: "Viva o próximo capítulo.", description: "Busca inteligente e apresentação editorial para imóveis extraordinários.", score: "96", metric: "A11y 100", theme: "realty" },
+  { name: "Lume Store", category: "E-commerce premium", title: "Design que desperta.", highlight: "Compra que flui.", description: "Produtos, narrativa e checkout reunidos em uma experiência de alto desejo.", score: "99", metric: "UX responsiva", theme: "commerce" },
+];
+
 function Reveal({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
   const reduce = useReducedMotion();
   return (
@@ -74,32 +80,48 @@ function SectionTitle({ eyebrow, title, text }: { eyebrow: string; title: React.
 }
 
 function DeviceMockup() {
+  const reduce = useReducedMotion();
+  const [projectIndex, setProjectIndex] = useState(0);
+  const project = showcaseProjects[projectIndex];
+
+  useEffect(() => {
+    if (reduce) return;
+    const timer = window.setInterval(() => setProjectIndex((current) => (current + 1) % showcaseProjects.length), 5200);
+    return () => window.clearInterval(timer);
+  }, [reduce]);
+
   return (
-    <motion.div className="devices" initial={{ opacity: 0, scale: .92, y: 30 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ duration: 1, delay: .35, ease: [0.22, 1, 0.36, 1] }} aria-label="Mockups de projetos digitais em notebook, tablet e celular">
+    <motion.div className="devices" initial={{ opacity: 0, scale: .92, y: 30 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ duration: 1, delay: .35, ease: [0.22, 1, 0.36, 1] }} aria-label="Vitrine responsiva de projetos digitais">
       <div className="deviceGlow" />
       <motion.div className="laptop" animate={{ y: [0, -8, 0] }} transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}>
-        <div className="laptopScreen"><MockScreen variant="analytics" /></div><div className="laptopBase" />
+        <div className="laptopScreen"><MockScreen project={project} size="desktop" /></div><div className="laptopBase" />
       </motion.div>
       <motion.div className="tablet" animate={{ y: [0, 7, 0] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: .7 }}>
-        <MockScreen variant="store" />
+        <MockScreen project={project} size="tablet" />
       </motion.div>
       <motion.div className="phone" animate={{ y: [0, -10, 0] }} transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut", delay: 1.1 }}>
-        <div className="phoneNotch" /><MockScreen variant="mobile" />
+        <div className="phoneNotch" /><MockScreen project={project} size="mobile" />
       </motion.div>
-      <div className="floatTag tagPerformance"><Zap size={14} /> 98 performance</div>
-      <div className="floatTag tagConversion"><BarChart3 size={14} /> + conversão</div>
+      <div className="floatTag tagPerformance"><Zap size={14} /> {project.score} Lighthouse</div>
+      <div className="floatTag tagConversion"><MonitorSmartphone size={14} /> 3 dispositivos</div>
+      <div className="showcaseControls" aria-label="Selecionar projeto em destaque">
+        {showcaseProjects.map((item, index) => <button key={item.name} className={index === projectIndex ? "active" : ""} onClick={() => setProjectIndex(index)} aria-label={`Mostrar ${item.name}`} aria-pressed={index === projectIndex}><span />{item.name}</button>)}
+      </div>
     </motion.div>
   );
 }
 
-function MockScreen({ variant }: { variant: "analytics" | "store" | "mobile" }) {
+function MockScreen({ project, size }: { project: (typeof showcaseProjects)[number]; size: "desktop" | "tablet" | "mobile" }) {
   return (
-    <div className={`mockScreen ${variant}`}>
-      <div className="mockNav"><b>apollun</b><span /><span /><i /></div>
-      {variant === "analytics" && <><div className="mockHeadline">Produtos digitais<br /><em>que avançam.</em></div><div className="mockButton" /><div className="mockChart"><i /><i /><i /><i /><i /></div></>}
-      {variant === "store" && <><div className="productOrb" /><strong>Forma & função.</strong><div className="productRows"><i /><i /><i /></div></>}
-      {variant === "mobile" && <><div className="mobileOrb" /><strong>Seu negócio,<br />em movimento.</strong><div className="mobileCta" /></>}
-    </div>
+    <motion.div key={`${project.name}-${size}`} className={`mockScreen showcase-${project.theme} showcase-${size}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: .45 }}>
+      <div className="mockNav"><b>{project.name}</b><span /><span /><i /></div>
+      {size === "desktop" && <div className="showcaseDesktop">
+        <div className="showcaseCopy"><span>{project.category}</span><h3>{project.title}<br /><em>{project.highlight}</em></h3><p>{project.description}</p><button>Explorar projeto <ArrowRight size={9} /></button></div>
+        <div className="showcaseDashboard"><div className="showcasePreview"><i /><i /><i /></div><div className="showcaseStats"><span><b>{project.score}</b>Performance</span><span><b>100%</b>Responsivo</span></div></div>
+      </div>}
+      {size === "tablet" && <div className="showcaseTablet"><span>{project.category}</span><div className="showcaseTile"><i /><i /><i /></div><h3>{project.title}<br /><em>{project.highlight}</em></h3><div className="showcaseTabletMeta"><b>{project.score}</b><span>{project.metric}</span></div></div>}
+      {size === "mobile" && <div className="showcaseMobile"><span>{project.category}</span><div className="showcaseMobileVisual"><i /></div><h3>{project.title}<br /><em>{project.highlight}</em></h3><button>Conhecer <ArrowRight size={7} /></button></div>}
+    </motion.div>
   );
 }
 
