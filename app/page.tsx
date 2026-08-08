@@ -55,9 +55,9 @@ const faq = [
 ];
 
 const showcaseProjects = [
-  { name: "Pulsar Saúde", category: "Clínica digital", title: "Cuidado simples.", highlight: "Experiência humana.", description: "Agendamentos, especialidades e confiança em uma jornada sem atritos.", score: "98", metric: "SEO 100", theme: "health" },
-  { name: "Nexo Imóveis", category: "Portal imobiliário", title: "Encontre o espaço.", highlight: "Viva o próximo capítulo.", description: "Busca inteligente e apresentação editorial para imóveis extraordinários.", score: "96", metric: "A11y 100", theme: "realty" },
-  { name: "Lume Store", category: "E-commerce premium", title: "Design que desperta.", highlight: "Compra que flui.", description: "Produtos, narrativa e checkout reunidos em uma experiência de alto desejo.", score: "99", metric: "UX responsiva", theme: "commerce" },
+  { name: "Srta. Niero", category: "Branding & posicionamento", title: "Forma, direção.", highlight: "Presença de marca.", description: "Uma experiência editorial para comunicar estratégia, autenticidade e propósito.", score: "Real", metric: "Responsivo", badge: "Projeto real", theme: "realty", desktop: "/showcase/niero-desktop.png", tablet: "/showcase/niero-tablet.png", mobile: "/showcase/niero-mobile.png" },
+  { name: "Apollun.Dev", category: "Tecnologia & produto digital", title: "Estratégia que vira.", highlight: "Experiência digital.", description: "Performance, design e tecnologia reunidos em uma presença digital de autoridade.", score: "Live", metric: "UX/UI", badge: "Projeto próprio", theme: "commerce", desktop: "/showcase/apollun-desktop.png", tablet: "/showcase/apollun-tablet.png", mobile: "/showcase/apollun-mobile.png" },
+  { name: "Pulsar Saúde", category: "Clínica digital", title: "Cuidado simples.", highlight: "Experiência humana.", description: "Agendamentos, especialidades e confiança em uma jornada sem atritos.", score: "98", metric: "SEO 100", badge: "98 Lighthouse", theme: "health", desktop: "", tablet: "", mobile: "" },
 ];
 
 function Reveal({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
@@ -102,7 +102,7 @@ function DeviceMockup() {
       <motion.div className="phone" animate={{ y: [0, -10, 0] }} transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut", delay: 1.1 }}>
         <div className="phoneNotch" /><MockScreen project={project} size="mobile" />
       </motion.div>
-      <div className="floatTag tagPerformance"><Zap size={14} /> {project.score} Lighthouse</div>
+      <div className="floatTag tagPerformance"><Zap size={14} /> {project.badge}</div>
       <div className="floatTag tagConversion"><MonitorSmartphone size={14} /> 3 dispositivos</div>
       <div className="showcaseControls" aria-label="Selecionar projeto em destaque">
         {showcaseProjects.map((item, index) => <button key={item.name} className={index === projectIndex ? "active" : ""} onClick={() => setProjectIndex(index)} aria-label={`Mostrar ${item.name}`} aria-pressed={index === projectIndex}><span />{item.name}</button>)}
@@ -112,6 +112,12 @@ function DeviceMockup() {
 }
 
 function MockScreen({ project, size }: { project: (typeof showcaseProjects)[number]; size: "desktop" | "tablet" | "mobile" }) {
+  const capture = size === "desktop" ? project.desktop : size === "tablet" ? project.tablet : project.mobile;
+
+  if (capture) {
+    return <motion.div key={`${project.name}-${size}`} className="mockScreen showcase-capture" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: .45 }}><img className="showcaseCapture" src={capture} alt={`Projeto ${project.name} em ${size}`} /></motion.div>;
+  }
+
   return (
     <motion.div key={`${project.name}-${size}`} className={`mockScreen showcase-${project.theme} showcase-${size}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: .45 }}>
       <div className="mockNav"><b>{project.name}</b><span /><span /><i /></div>
