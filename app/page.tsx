@@ -63,7 +63,7 @@ const showcaseProjects = [
 const projectOptions = ["Landing page", "Site institucional", "Reformulação de site"];
 const projectStages = ["Tenho apenas a ideia", "Já tenho textos e identidade visual", "Já tenho um site e quero reformular", "O projeto já está bem definido", "Preciso de orientação completa"];
 const availableAssets = ["Já tenho domínio", "Já tenho hospedagem", "Já tenho identidade visual", "Já tenho textos e imagens"];
-const whatsappNumber = "";
+const whatsappNumber = "5511940312713";
 
 function Reveal({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
   const reduce = useReducedMotion();
