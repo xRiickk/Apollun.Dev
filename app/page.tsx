@@ -60,6 +60,11 @@ const showcaseProjects = [
   { name: "Pulsar Saúde", category: "Clínica digital", title: "Cuidado simples.", highlight: "Experiência humana.", description: "Agendamentos, especialidades e confiança em uma jornada sem atritos.", score: "98", metric: "SEO 100", badge: "98 Lighthouse", theme: "health", desktop: "", tablet: "", mobile: "" },
 ];
 
+const projectOptions = ["Landing page", "Site institucional", "Reformulação de site"];
+const projectStages = ["Tenho apenas a ideia", "Já tenho textos e identidade visual", "Já tenho um site e quero reformular", "O projeto já está bem definido", "Preciso de orientação completa"];
+const availableAssets = ["Já tenho domínio", "Já tenho hospedagem", "Já tenho identidade visual", "Já tenho textos e imagens"];
+const whatsappNumber = "";
+
 function Reveal({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
   const reduce = useReducedMotion();
   return (
@@ -131,11 +136,66 @@ function MockScreen({ project, size }: { project: (typeof showcaseProjects)[numb
   );
 }
 
+function BriefingModal({ onClose }: { onClose: () => void }) {
+  const [step, setStep] = useState(0);
+  const [name, setName] = useState("");
+  const [business, setBusiness] = useState("");
+  const [segment, setSegment] = useState("");
+  const [projects, setProjects] = useState<string[]>([]);
+  const [stage, setStage] = useState("");
+  const [details, setDetails] = useState("");
+  const [assets, setAssets] = useState<string[]>([]);
+
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKeyDown = (event: KeyboardEvent) => { if (event.key === "Escape") onClose(); };
+    window.addEventListener("keydown", onKeyDown);
+    return () => { document.body.style.overflow = previousOverflow; window.removeEventListener("keydown", onKeyDown); };
+  }, [onClose]);
+
+  const toggleItem = (item: string, values: string[], setter: (items: string[]) => void) => setter(values.includes(item) ? values.filter((value) => value !== item) : [...values, item]);
+  const canContinue = step === 0 ? Boolean(name.trim() && business.trim() && segment.trim()) : step === 1 ? projects.length > 0 : step === 2 ? Boolean(stage) : true;
+
+  const sendBriefing = () => {
+    const assetLines = availableAssets.map((item) => `${assets.includes(item) ? "✓" : "✗"} ${item.replace("Já tenho ", "")}`).join("\n");
+    const message = `Olá! Vim pelo site da Apollun.Dev e gostaria de solicitar um orçamento.\n\nNome: ${name.trim()}\nEmpresa: ${business.trim()}\nSegmento: ${segment.trim()}\n\nProjeto: ${projects.join(", ")}\nMomento atual: ${stage}\n\nJá possuo:\n${assetLines}\n\nSobre o projeto:\n${details.trim() || "Prefiro explicar durante a conversa."}`;
+    const destination = whatsappNumber ? `https://wa.me/${whatsappNumber}` : "https://wa.me/";
+    window.open(`${destination}?text=${encodeURIComponent(message)}`, "_blank", "noopener,noreferrer");
+  };
+
+  return (
+    <motion.div className="briefingOverlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
+      <motion.div className="briefingModal" role="dialog" aria-modal="true" aria-labelledby="briefing-title" initial={{ opacity: 0, y: 24, scale: .97 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: .35, ease: [0.22, 1, 0.36, 1] }}>
+        <div className="briefingHeader">
+          <div><span>Briefing Apollun.Dev</span><strong id="briefing-title">Conte-nos sobre seu projeto.</strong></div>
+          <button type="button" onClick={onClose} aria-label="Fechar briefing"><X size={19} /></button>
+        </div>
+        <div className="briefingProgress"><span style={{ width: `${((step + 1) / 4) * 100}%` }} /></div>
+        <form onSubmit={(event) => { event.preventDefault(); if (step < 3) setStep(step + 1); else sendBriefing(); }}>
+          <div className="briefingStepMeta"><span>Etapa {step + 1} de 4</span><small>Cerca de 2 minutos</small></div>
+
+          {step === 0 && <fieldset className="briefingFields"><legend>Primeiro, queremos conhecer você.</legend><p>Essas informações ajudam a entender o contexto do projeto.</p><label>Nome<input autoFocus value={name} onChange={(event) => setName(event.target.value)} placeholder="Como podemos chamar você?" /></label><label>Empresa ou negócio<input value={business} onChange={(event) => setBusiness(event.target.value)} placeholder="Nome da sua empresa" /></label><label>Segmento<input value={segment} onChange={(event) => setSegment(event.target.value)} placeholder="Ex.: clínica, advocacia, consultoria" /></label></fieldset>}
+
+          {step === 1 && <fieldset className="briefingChoices"><legend>O que você deseja criar?</legend><p>Você pode selecionar mais de uma opção.</p><div>{projectOptions.map((item) => <button type="button" key={item} className={projects.includes(item) ? "selected" : ""} onClick={() => toggleItem(item, projects, setProjects)} aria-pressed={projects.includes(item)}><span>{projects.includes(item) && <Check size={15} />}</span>{item}</button>)}</div></fieldset>}
+
+          {step === 2 && <fieldset className="briefingChoices"><legend>Em qual etapa sua ideia está?</legend><p>Não existe resposta errada. Adaptamos o processo ao seu momento.</p><div>{projectStages.map((item) => <button type="button" key={item} className={stage === item ? "selected" : ""} onClick={() => setStage(item)} aria-pressed={stage === item}><span>{stage === item && <Check size={15} />}</span>{item}</button>)}</div></fieldset>}
+
+          {step === 3 && <fieldset className="briefingDetails"><legend>Últimos detalhes.</legend><p>Conte o essencial. O restante alinhamos juntos na conversa.</p><label>Sobre sua empresa e o projeto<textarea value={details} onChange={(event) => setDetails(event.target.value)} placeholder="Conte brevemente sobre sua empresa, o que deseja construir e qualquer informação importante..." rows={4} /></label><span className="assetsLabel">O que você já possui? <small>Opcional</small></span><div className="assetGrid">{availableAssets.map((item) => <button type="button" key={item} className={assets.includes(item) ? "selected" : ""} onClick={() => toggleItem(item, assets, setAssets)} aria-pressed={assets.includes(item)}><span>{assets.includes(item) && <Check size={13} />}</span>{item}</button>)}</div></fieldset>}
+
+          <div className="briefingFooter"><button type="button" className="briefingBack" onClick={() => step === 0 ? onClose() : setStep(step - 1)}>{step === 0 ? "Agora não" : "Voltar"}</button><button type="submit" className="briefingNext" disabled={!canContinue}>{step === 3 ? "Enviar pelo WhatsApp" : "Continuar"}<ArrowRight size={16} /></button></div>
+        </form>
+      </motion.div>
+    </motion.div>
+  );
+}
+
 export default function Home() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [testimonial, setTestimonial] = useState(0);
   const [theme, setTheme] = useState<"dark" | "light">("dark");
+  const [briefingOpen, setBriefingOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -172,11 +232,11 @@ export default function Home() {
               <span>{theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}</span>
             </button>
             <span className="availability"><i />Disponível agora</span>
-            <a className="navCta" href="mailto:contato@apollun.dev?subject=Iniciar%20projeto">Iniciar projeto <ArrowRight size={15} /></a>
+            <button className="navCta" type="button" onClick={() => setBriefingOpen(true)}>Iniciar projeto <ArrowRight size={15} /></button>
           </div>
           <button className="menuButton" onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? "Fechar menu" : "Abrir menu"} aria-expanded={menuOpen}>{menuOpen ? <X /> : <Menu />}</button>
         </div>
-        {menuOpen && <motion.nav className="mobileNav" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}>{navItems.map(([label, href]) => <a href={href} key={href} onClick={() => setMenuOpen(false)}>{label}</a>)}<button className="mobileThemeToggle" onClick={toggleTheme}>{theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}{theme === "dark" ? "Ativar modo claro" : "Ativar modo escuro"}</button><span className="availability"><i />Disponível agora</span><a href="mailto:contato@apollun.dev?subject=Iniciar%20projeto">Iniciar projeto</a></motion.nav>}
+        {menuOpen && <motion.nav className="mobileNav" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}>{navItems.map(([label, href]) => <a href={href} key={href} onClick={() => setMenuOpen(false)}>{label}</a>)}<button className="mobileThemeToggle" onClick={toggleTheme}>{theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}{theme === "dark" ? "Ativar modo claro" : "Ativar modo escuro"}</button><span className="availability"><i />Disponível agora</span><button className="mobileBriefingLink" type="button" onClick={() => { setMenuOpen(false); setBriefingOpen(true); }}>Iniciar projeto</button></motion.nav>}
       </header>
 
       <section className="hero" id="inicio">
@@ -188,7 +248,7 @@ export default function Home() {
             <h1>Sites modernos que transformam <span>visitantes em clientes.</span></h1>
             <p>Transformamos ideias em experiências digitais de alta performance, unindo estratégia, design e tecnologia para criar negócios mais fortes.</p>
             <div className="heroActions">
-              <a className="button primary" href="mailto:contato@apollun.dev?subject=Quero%20um%20site%20premium">Solicitar orçamento <ArrowRight size={17} /></a>
+              <button className="button primary" type="button" onClick={() => setBriefingOpen(true)}>Solicitar orçamento <ArrowRight size={17} /></button>
               <a className="button secondary" href="#portfolio">Ver projetos</a>
             </div>
             <div className="badges">{["Alta Performance", "SEO", "UX/UI", "Responsivo"].map((item) => <span key={item}><Check size={13} />{item}</span>)}</div>
@@ -237,7 +297,7 @@ export default function Home() {
       <section className="section pricingSection" id="planos">
         <div className="container">
           <SectionTitle eyebrow="Formatos de projeto" title={<>Uma solução para cada <span>momento do negócio.</span></>} text="O escopo final é personalizado. Os formatos abaixo ajudam a identificar o melhor ponto de partida." />
-          <div className="pricingGrid">{plans.map((plan) => <Reveal className={`priceCard ${plan.featured ? "featured" : ""}`} key={plan.name}>{plan.featured && <div className="popularBadge">Mais contratado</div>}<span className="planLabel">APOLLUN / {plan.name.toUpperCase()}</span><h3>{plan.name}</h3><p>{plan.description}</p><div className="priceLine"><strong>Sob medida</strong><span>escopo personalizado</span></div><ul>{plan.items.map((item) => <li key={item}><Check size={15} />{item}</li>)}</ul><a className={`button ${plan.featured ? "primary" : "secondary"}`} href={`mailto:contato@apollun.dev?subject=Plano%20${plan.name}`}>Quero este plano <ArrowRight size={16} /></a></Reveal>)}</div>
+          <div className="pricingGrid">{plans.map((plan) => <Reveal className={`priceCard ${plan.featured ? "featured" : ""}`} key={plan.name}>{plan.featured && <div className="popularBadge">Mais contratado</div>}<span className="planLabel">APOLLUN / {plan.name.toUpperCase()}</span><h3>{plan.name}</h3><p>{plan.description}</p><div className="priceLine"><strong>Sob medida</strong><span>escopo personalizado</span></div><ul>{plan.items.map((item) => <li key={item}><Check size={15} />{item}</li>)}</ul><button className={`button ${plan.featured ? "primary" : "secondary"}`} type="button" onClick={() => setBriefingOpen(true)}>Quero este plano <ArrowRight size={16} /></button></Reveal>)}</div>
         </div>
       </section>
 
@@ -254,10 +314,11 @@ export default function Home() {
 
       <section className="finalCta" id="contato">
         <div className="finalGrid" /><div className="finalOrb orbA" /><div className="finalOrb orbB" />
-        <Reveal className="container finalInner"><span className="eyebrow"><i />Seu próximo projeto começa aqui</span><h2>Vamos transformar sua ideia em uma experiência digital <span>extraordinária?</span></h2><p>Conte o que você quer construir. Nós cuidamos da estratégia, do design e da tecnologia.</p><a className="button ctaButton" href="mailto:contato@apollun.dev?subject=Solicitar%20orçamento">Solicitar orçamento <ArrowRight size={20} /></a></Reveal>
+        <Reveal className="container finalInner"><span className="eyebrow"><i />Seu próximo projeto começa aqui</span><h2>Vamos transformar sua ideia em uma experiência digital <span>extraordinária?</span></h2><p>Conte o que você quer construir. Nós cuidamos da estratégia, do design e da tecnologia.</p><button className="button ctaButton" type="button" onClick={() => setBriefingOpen(true)}>Solicitar orçamento <ArrowRight size={20} /></button></Reveal>
       </section>
 
-      <footer className="footer"><div className="container"><div className="footerTop"><div><a className="brand" href="#inicio"><img className="brandIcon" src="/apollun-icon.png" alt="" />APOLLUN<span>.DEV</span></a><p>Transformando ideias em experiências digitais.</p></div><div className="footerColumn"><strong>Mapa do site</strong>{navItems.slice(0, 4).map(([label, href]) => <a href={href} key={href}>{label}</a>)}</div><div className="footerColumn"><strong>Conecte-se</strong><a href="https://instagram.com/apollun.dev" target="_blank" rel="noreferrer">Instagram</a><a href="https://linkedin.com/company/apollun-dev" target="_blank" rel="noreferrer">LinkedIn</a><a href="mailto:contato@apollun.dev">E-mail</a><a href="mailto:contato@apollun.dev?subject=Contato%20via%20WhatsApp">WhatsApp</a></div><div className="footerColumn"><strong>Contato</strong><a href="mailto:contato@apollun.dev">contato@apollun.dev</a><span>Brasil · Atendimento digital</span></div></div><div className="footerBottom"><span>© {new Date().getFullYear()} Apollun.Dev</span><div><span>Política de Privacidade</span><span>Termos de Uso</span></div><span>Design & código com precisão.</span></div></div></footer>
+      <footer className="footer"><div className="container"><div className="footerTop"><div><a className="brand" href="#inicio"><img className="brandIcon" src="/apollun-icon.png" alt="" />APOLLUN<span>.DEV</span></a><p>Transformando ideias em experiências digitais.</p></div><div className="footerColumn"><strong>Mapa do site</strong>{navItems.slice(0, 4).map(([label, href]) => <a href={href} key={href}>{label}</a>)}</div><div className="footerColumn"><strong>Conecte-se</strong><a href="https://instagram.com/apollun.dev" target="_blank" rel="noreferrer">Instagram</a><a href="https://linkedin.com/company/apollun-dev" target="_blank" rel="noreferrer">LinkedIn</a><a href="mailto:contato@apollun.dev">E-mail</a><button className="footerBriefingLink" type="button" onClick={() => setBriefingOpen(true)}>WhatsApp</button></div><div className="footerColumn"><strong>Contato</strong><a href="mailto:contato@apollun.dev">contato@apollun.dev</a><span>Brasil · Atendimento digital</span></div></div><div className="footerBottom"><span>© {new Date().getFullYear()} Apollun.Dev</span><div><span>Política de Privacidade</span><span>Termos de Uso</span></div><span>Design & código com precisão.</span></div></div></footer>
+      {briefingOpen && <BriefingModal onClose={() => setBriefingOpen(false)} />}
     </main>
   );
 }
