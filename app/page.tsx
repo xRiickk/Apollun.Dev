@@ -5,7 +5,8 @@ import { motion, useReducedMotion } from "framer-motion";
 import {
   ArrowRight, BarChart3, Blocks, Check, ChevronDown, Code2, Gauge,
   Globe2, Layers3, Menu, MonitorSmartphone, Search, ShieldCheck,
-  Moon, ShoppingBag, Sparkles, Star, Sun, X, Zap,
+  Moon, ShoppingBag, Sparkles, Star, Sun, X, Zap, HeartPulse, Scale,
+  Utensils, Building2, Dumbbell, BriefcaseBusiness, Wrench,
 } from "lucide-react";
 
 const navItems = [
@@ -13,7 +14,15 @@ const navItems = [
   ["Processo", "#processo"], ["Sobre", "#diferenciais"],
 ];
 
-const clients = ["Clínicas", "Advogados", "Restaurantes", "Imobiliárias", "Academias", "Empresas", "Prestadores"];
+const clients = [
+  { name: "Clínicas", icon: HeartPulse },
+  { name: "Advogados", icon: Scale },
+  { name: "Restaurantes", icon: Utensils },
+  { name: "Imobiliárias", icon: Building2 },
+  { name: "Academias", icon: Dumbbell },
+  { name: "Empresas", icon: BriefcaseBusiness },
+  { name: "Prestadores", icon: Wrench },
+];
 
 const services = [
   { icon: Globe2, title: "Desenvolvimento Web", text: "Sites rápidos, responsivos e preparados para crescer com seu negócio." },
@@ -259,7 +268,7 @@ export default function Home() {
       </section>
 
       <section className="clientSection" id="clientes">
-        <div className="container"><p className="clientLabel">Soluções digitais para negócios que valorizam excelência</p><div className="clientGrid">{clients.map((item) => <div key={item}><span>{item.charAt(0)}</span>{item}</div>)}</div></div>
+        <div className="container"><p className="clientLabel">Soluções digitais para diferentes mercados</p><div className="clientGrid">{clients.map(({ name, icon: Icon }) => <button className="clientCard" type="button" key={name} onClick={() => setBriefingOpen(true)} aria-label={`Solicitar projeto para ${name}`}><span className="clientIcon"><Icon size={19} strokeWidth={1.8} /></span><strong>{name}</strong><ArrowRight className="clientArrow" size={16} /></button>)}</div></div>
       </section>
 
       <section className="section" id="servicos">
