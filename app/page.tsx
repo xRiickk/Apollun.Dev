@@ -6,7 +6,7 @@ import {
   ArrowRight, BarChart3, Blocks, Check, ChevronDown, Code2, Gauge,
   Globe2, Layers3, Menu, MonitorSmartphone, Search, ShieldCheck,
   Moon, ShoppingBag, Sparkles, Star, Sun, X, Zap, HeartPulse, Scale,
-  Utensils, Building2, Dumbbell, BriefcaseBusiness, Wrench,
+  Utensils, Building2, Dumbbell, BriefcaseBusiness, Wrench, RefreshCw,
 } from "lucide-react";
 
 const navItems = [
@@ -30,7 +30,7 @@ const services = [
   { icon: Sparkles, title: "UX/UI Design", text: "Interfaces intuitivas, elegantes e alinhadas à identidade da sua marca." },
   { icon: Search, title: "SEO", text: "Estrutura técnica e conteúdo pensados para aumentar sua visibilidade orgânica." },
   { icon: Blocks, title: "Sistemas Web", text: "Plataformas sob medida para automatizar processos e dar escala à operação." },
-  { icon: ShoppingBag, title: "Lojas Virtuais", text: "Experiências de compra fluidas, seguras e otimizadas para conversão." },
+  { icon: RefreshCw, title: "Reformulação de Sites", text: "Modernizamos sites antigos para melhorar design, performance, experiência e resultados." },
 ];
 
 const differences = [
