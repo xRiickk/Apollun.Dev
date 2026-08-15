@@ -69,9 +69,15 @@ const showcaseProjects = [
   { name: "Pulsar Saúde", category: "Clínica digital", title: "Cuidado simples.", highlight: "Experiência humana.", description: "Agendamentos, especialidades e confiança em uma jornada sem atritos.", score: "98", metric: "SEO 100", badge: "98 Lighthouse", theme: "health", desktop: "", tablet: "", mobile: "" },
 ];
 
-const projectOptions = ["Landing page", "Site institucional", "Reformulação de site"];
+const projectOptions = ["Landing page", "Site institucional", "Reformulação de site", "Sistema web", "UX/UI Design", "Ainda não tenho certeza"];
+const projectGoals = ["Gerar mais contatos e orçamentos", "Apresentar melhor a empresa", "Fortalecer a autoridade da marca", "Divulgar um produto ou serviço", "Modernizar um site existente", "Automatizar um processo"];
 const projectStages = ["Tenho apenas a ideia", "Já tenho textos e identidade visual", "Já tenho um site e quero reformular", "O projeto já está bem definido", "Preciso de orientação completa"];
-const availableAssets = ["Já tenho domínio", "Já tenho hospedagem", "Já tenho identidade visual", "Já tenho textos e imagens"];
+const logoOptions = ["Tenho o arquivo original", "Tenho apenas uma imagem", "Quero modernizar meu logotipo", "Ainda não tenho logotipo"];
+const paletteOptions = ["Já tenho as cores da marca", "Tenho algumas cores em mente", "Ainda não tenho uma paleta", "Quero uma proposta da Apollun.Dev"];
+const visualStyles = ["Moderno", "Minimalista", "Sofisticado", "Tecnológico", "Corporativo", "Elegante", "Criativo", "Acolhedor"];
+const themeOptions = ["Predominantemente claro", "Predominantemente escuro", "Mistura entre claro e escuro", "Quero uma recomendação"];
+const projectDeadlines = ["Assim que possível", "Em até 30 dias", "Entre 30 e 60 dias", "Ainda não tenho prazo"];
+const availableAssets = ["Domínio", "Hospedagem", "Identidade visual", "Textos", "Fotografias", "Vídeos", "Depoimentos de clientes"];
 const whatsappNumber = "5511940312713";
 
 function Reveal({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
@@ -150,10 +156,20 @@ function BriefingModal({ onClose }: { onClose: () => void }) {
   const [name, setName] = useState("");
   const [business, setBusiness] = useState("");
   const [segment, setSegment] = useState("");
+  const [onlinePresence, setOnlinePresence] = useState("");
   const [projects, setProjects] = useState<string[]>([]);
+  const [goal, setGoal] = useState("");
+  const [logoStatus, setLogoStatus] = useState("");
+  const [paletteStatus, setPaletteStatus] = useState("");
+  const [paletteDetails, setPaletteDetails] = useState("");
+  const [styles, setStyles] = useState<string[]>([]);
+  const [visualTheme, setVisualTheme] = useState("");
   const [stage, setStage] = useState("");
-  const [details, setDetails] = useState("");
   const [assets, setAssets] = useState<string[]>([]);
+  const [currentUrl, setCurrentUrl] = useState("");
+  const [references, setReferences] = useState("");
+  const [deadline, setDeadline] = useState("");
+  const [details, setDetails] = useState("");
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
@@ -164,11 +180,12 @@ function BriefingModal({ onClose }: { onClose: () => void }) {
   }, [onClose]);
 
   const toggleItem = (item: string, values: string[], setter: (items: string[]) => void) => setter(values.includes(item) ? values.filter((value) => value !== item) : [...values, item]);
-  const canContinue = step === 0 ? Boolean(name.trim() && business.trim() && segment.trim()) : step === 1 ? projects.length > 0 : step === 2 ? Boolean(stage) : true;
+  const canContinue = step === 0 ? Boolean(name.trim() && business.trim() && segment.trim()) : step === 1 ? projects.length > 0 : step === 2 ? Boolean(goal) : step === 3 ? Boolean(logoStatus && paletteStatus) : step === 4 ? Boolean(styles.length && visualTheme) : step === 5 ? Boolean(stage) : Boolean(deadline);
+  const needsCurrentUrl = projects.includes("Reformulação de site") || stage === "Já tenho um site e quero reformular";
 
   const sendBriefing = () => {
-    const assetLines = availableAssets.map((item) => `${assets.includes(item) ? "✓" : "✗"} ${item.replace("Já tenho ", "")}`).join("\n");
-    const message = `Olá! Vim pelo site da Apollun.Dev e gostaria de solicitar um orçamento.\n\nNome: ${name.trim()}\nEmpresa: ${business.trim()}\nSegmento: ${segment.trim()}\n\nProjeto: ${projects.join(", ")}\nMomento atual: ${stage}\n\nJá possuo:\n${assetLines}\n\nSobre o projeto:\n${details.trim() || "Prefiro explicar durante a conversa."}`;
+    const assetLines = availableAssets.map((item) => `${assets.includes(item) ? "✓" : "✗"} ${item}`).join("\n");
+    const message = `Olá! Vim pelo site da Apollun.Dev e gostaria de solicitar um orçamento.\n\n*CONTATO*\nNome: ${name.trim()}\nEmpresa: ${business.trim()}\nSegmento: ${segment.trim()}\nPresença atual: ${onlinePresence.trim() || "Não informado"}\n\n*PROJETO*\nTipo: ${projects.join(", ")}\nObjetivo: ${goal}\nMomento atual: ${stage}\nPrazo: ${deadline}\n${needsCurrentUrl ? `Site atual: ${currentUrl.trim() || "Não informado"}\n` : ""}\n*IDENTIDADE VISUAL*\nLogotipo: ${logoStatus}\nPaleta: ${paletteStatus}\nCores informadas: ${paletteDetails.trim() || "Não informado"}\nEstilo: ${styles.join(", ")}\nTema: ${visualTheme}\nReferências: ${references.trim() || "Não informado"}\n\n*MATERIAIS DISPONÍVEIS*\n${assetLines}\n\n*DETALHES*\n${details.trim() || "Prefiro explicar durante a conversa."}`;
     const destination = whatsappNumber ? `https://wa.me/${whatsappNumber}` : "https://wa.me/";
     window.open(`${destination}?text=${encodeURIComponent(message)}`, "_blank", "noopener,noreferrer");
   };
@@ -180,19 +197,25 @@ function BriefingModal({ onClose }: { onClose: () => void }) {
           <div><span>Briefing Apollun.Dev</span><strong id="briefing-title">Conte-nos sobre seu projeto.</strong></div>
           <button type="button" onClick={onClose} aria-label="Fechar briefing"><X size={19} /></button>
         </div>
-        <div className="briefingProgress"><span style={{ width: `${((step + 1) / 4) * 100}%` }} /></div>
-        <form onSubmit={(event) => { event.preventDefault(); if (step < 3) setStep(step + 1); else sendBriefing(); }}>
-          <div className="briefingStepMeta"><span>Etapa {step + 1} de 4</span><small>Cerca de 2 minutos</small></div>
+        <div className="briefingProgress"><span style={{ width: `${((step + 1) / 7) * 100}%` }} /></div>
+        <form onSubmit={(event) => { event.preventDefault(); if (step < 6) setStep(step + 1); else sendBriefing(); }}>
+          <div className="briefingStepMeta"><span>Etapa {step + 1} de 7</span><small>Cerca de 4 minutos</small></div>
 
-          {step === 0 && <fieldset className="briefingFields"><legend>Primeiro, queremos conhecer você.</legend><p>Essas informações ajudam a entender o contexto do projeto.</p><label>Nome<input autoFocus value={name} onChange={(event) => setName(event.target.value)} placeholder="Como podemos chamar você?" /></label><label>Empresa ou negócio<input value={business} onChange={(event) => setBusiness(event.target.value)} placeholder="Nome da sua empresa" /></label><label>Segmento<input value={segment} onChange={(event) => setSegment(event.target.value)} placeholder="Ex.: clínica, advocacia, consultoria" /></label></fieldset>}
+          {step === 0 && <fieldset className="briefingFields"><legend>Primeiro, queremos conhecer você.</legend><p>Essas informações ajudam a entender o contexto do projeto.</p><label>Nome<input autoFocus value={name} onChange={(event) => setName(event.target.value)} placeholder="Como podemos chamar você?" /></label><label>Empresa ou negócio<input value={business} onChange={(event) => setBusiness(event.target.value)} placeholder="Nome da sua empresa" /></label><label>Segmento<input value={segment} onChange={(event) => setSegment(event.target.value)} placeholder="Ex.: clínica, advocacia, consultoria" /></label><label className="briefingFullField">Instagram ou site atual <small>Opcional</small><input value={onlinePresence} onChange={(event) => setOnlinePresence(event.target.value)} placeholder="@suaempresa ou https://..." /></label></fieldset>}
 
           {step === 1 && <fieldset className="briefingChoices"><legend>O que você deseja criar?</legend><p>Você pode selecionar mais de uma opção.</p><div>{projectOptions.map((item) => <button type="button" key={item} className={projects.includes(item) ? "selected" : ""} onClick={() => toggleItem(item, projects, setProjects)} aria-pressed={projects.includes(item)}><span>{projects.includes(item) && <Check size={15} />}</span>{item}</button>)}</div></fieldset>}
 
-          {step === 2 && <fieldset className="briefingChoices"><legend>Em qual etapa sua ideia está?</legend><p>Não existe resposta errada. Adaptamos o processo ao seu momento.</p><div>{projectStages.map((item) => <button type="button" key={item} className={stage === item ? "selected" : ""} onClick={() => setStage(item)} aria-pressed={stage === item}><span>{stage === item && <Check size={15} />}</span>{item}</button>)}</div></fieldset>}
+          {step === 2 && <fieldset className="briefingChoices"><legend>Qual é o principal objetivo?</legend><p>Assim podemos pensar no site como uma ferramenta para o seu negócio.</p><div>{projectGoals.map((item) => <button type="button" key={item} className={goal === item ? "selected" : ""} onClick={() => setGoal(item)} aria-pressed={goal === item}><span>{goal === item && <Check size={15} />}</span>{item}</button>)}</div></fieldset>}
 
-          {step === 3 && <fieldset className="briefingDetails"><legend>Últimos detalhes.</legend><p>Conte o essencial. O restante alinhamos juntos na conversa.</p><label>Sobre sua empresa e o projeto<textarea value={details} onChange={(event) => setDetails(event.target.value)} placeholder="Conte brevemente sobre sua empresa, o que deseja construir e qualquer informação importante..." rows={4} /></label><span className="assetsLabel">O que você já possui? <small>Opcional</small></span><div className="assetGrid">{availableAssets.map((item) => <button type="button" key={item} className={assets.includes(item) ? "selected" : ""} onClick={() => toggleItem(item, assets, setAssets)} aria-pressed={assets.includes(item)}><span>{assets.includes(item) && <Check size={13} />}</span>{item}</button>)}</div></fieldset>}
+          {step === 3 && <fieldset className="briefingChoices briefingIdentity"><legend>Como está a identidade da marca?</legend><p>Não precisa dominar design. Escolha as opções que mais se aproximam da sua realidade.</p><span className="briefingGroupLabel">Logotipo</span><div className="briefingOptionGrid">{logoOptions.map((item) => <button type="button" key={item} className={logoStatus === item ? "selected" : ""} onClick={() => setLogoStatus(item)} aria-pressed={logoStatus === item}><span>{logoStatus === item && <Check size={15} />}</span>{item}</button>)}</div><span className="briefingGroupLabel">Paleta de cores</span><div className="briefingOptionGrid">{paletteOptions.map((item) => <button type="button" key={item} className={paletteStatus === item ? "selected" : ""} onClick={() => setPaletteStatus(item)} aria-pressed={paletteStatus === item}><span>{paletteStatus === item && <Check size={15} />}</span>{item}</button>)}</div>{(paletteStatus === "Já tenho as cores da marca" || paletteStatus === "Tenho algumas cores em mente") && <label className="briefingInlineField">Quais cores?<input value={paletteDetails} onChange={(event) => setPaletteDetails(event.target.value)} placeholder="Ex.: azul-marinho, branco e dourado ou #050816" /></label>}</fieldset>}
 
-          <div className="briefingFooter"><button type="button" className="briefingBack" onClick={() => step === 0 ? onClose() : setStep(step - 1)}>{step === 0 ? "Agora não" : "Voltar"}</button><button type="submit" className="briefingNext" disabled={!canContinue}>{step === 3 ? "Enviar pelo WhatsApp" : "Continuar"}<ArrowRight size={16} /></button></div>
+          {step === 4 && <fieldset className="briefingChoices briefingIdentity"><legend>Qual visual combina com sua empresa?</legend><p>Selecione até três estilos e escolha a aparência geral.</p><span className="briefingGroupLabel">Estilo desejado</span><div className="briefingOptionGrid">{visualStyles.map((item) => <button type="button" key={item} className={styles.includes(item) ? "selected" : ""} disabled={!styles.includes(item) && styles.length >= 3} onClick={() => toggleItem(item, styles, setStyles)} aria-pressed={styles.includes(item)}><span>{styles.includes(item) && <Check size={15} />}</span>{item}</button>)}</div><span className="briefingGroupLabel">Preferência de tema</span><div className="briefingOptionGrid">{themeOptions.map((item) => <button type="button" key={item} className={visualTheme === item ? "selected" : ""} onClick={() => setVisualTheme(item)} aria-pressed={visualTheme === item}><span>{visualTheme === item && <Check size={15} />}</span>{item}</button>)}</div></fieldset>}
+
+          {step === 5 && <fieldset className="briefingChoices briefingIdentity"><legend>Em qual etapa o projeto está?</legend><p>Adaptamos o processo ao que você já possui.</p><div>{projectStages.map((item) => <button type="button" key={item} className={stage === item ? "selected" : ""} onClick={() => setStage(item)} aria-pressed={stage === item}><span>{stage === item && <Check size={15} />}</span>{item}</button>)}</div>{needsCurrentUrl && <label className="briefingInlineField">Endereço do site atual <small>Opcional</small><input value={currentUrl} onChange={(event) => setCurrentUrl(event.target.value)} placeholder="https://seusite.com.br" /></label>}<span className="briefingGroupLabel">Materiais disponíveis <small>Opcional</small></span><div className="assetGrid">{availableAssets.map((item) => <button type="button" key={item} className={assets.includes(item) ? "selected" : ""} onClick={() => toggleItem(item, assets, setAssets)} aria-pressed={assets.includes(item)}><span>{assets.includes(item) && <Check size={13} />}</span>{item}</button>)}</div></fieldset>}
+
+          {step === 6 && <fieldset className="briefingDetails"><legend>Últimos detalhes.</legend><p>Estamos quase lá. Conte o essencial e revise o resumo do seu projeto.</p><span className="briefingGroupLabel">Quando gostaria de lançar?</span><div className="briefingDeadlineGrid">{projectDeadlines.map((item) => <button type="button" key={item} className={deadline === item ? "selected" : ""} onClick={() => setDeadline(item)} aria-pressed={deadline === item}><span>{deadline === item && <Check size={13} />}</span>{item}</button>)}</div><label>Sites ou marcas de referência <small>Opcional</small><input value={references} onChange={(event) => setReferences(event.target.value)} placeholder="Cole links ou escreva os nomes das referências" /></label><label>Sobre sua empresa e o projeto <small>Opcional</small><textarea value={details} onChange={(event) => setDetails(event.target.value)} placeholder="Conte o que deseja construir e qualquer informação importante..." rows={3} /></label><div className="briefingSummary"><span>Resumo do briefing</span><div><p><small>Projeto</small><strong>{projects.join(", ")}</strong></p><p><small>Objetivo</small><strong>{goal}</strong></p><p><small>Direção visual</small><strong>{styles.join(", ")}</strong></p><p><small>Prazo</small><strong>{deadline || "Selecione uma opção"}</strong></p></div></div></fieldset>}
+
+          <div className="briefingFooter"><button type="button" className="briefingBack" onClick={() => step === 0 ? onClose() : setStep(step - 1)}>{step === 0 ? "Agora não" : "Voltar"}</button><button type="submit" className="briefingNext" disabled={!canContinue}>{step === 6 ? "Enviar pelo WhatsApp" : "Continuar"}<ArrowRight size={16} /></button></div>
         </form>
       </motion.div>
     </motion.div>
