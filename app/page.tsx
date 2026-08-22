@@ -5,7 +5,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import {
   ArrowRight, BarChart3, Blocks, Check, ChevronDown, Code2, Gauge,
   Globe2, Layers3, Menu, MonitorSmartphone, Search, ShieldCheck,
-  Moon, ShoppingBag, Sparkles, Star, Sun, X, Zap, HeartPulse, Scale,
+  Moon, Sparkles, Star, Sun, X, Zap, HeartPulse, Scale,
   Utensils, Building2, Dumbbell, BriefcaseBusiness, Wrench, RefreshCw,
 } from "lucide-react";
 
@@ -321,7 +321,7 @@ export default function Home() {
           <div className="projectGrid">
             <Reveal className="projectCard projectWide"><div className="projectVisual realProjectVisual nieroProject"><img src="/showcase/niero-desktop.png" alt="Página inicial do site Srta. Niero" /></div><div className="projectInfo"><div><span>WEBSITE · BRANDING</span><h3>Srta. Niero</h3></div><a href="#contato" aria-label="Conhecer projeto Srta. Niero"><ArrowRight /></a></div></Reveal>
             <Reveal className="projectCard"><div className="projectVisual realProjectVisual apollunProject"><img src="/showcase/apollun-desktop.png" alt="Página inicial do site Apollun.Dev" /></div><div className="projectInfo"><div><span>WEBSITE · UX/UI · DESENVOLVIMENTO</span><h3>Apollun.Dev</h3></div><a href="#contato" aria-label="Conhecer projeto Apollun.Dev"><ArrowRight /></a></div></Reveal>
-            <Reveal className="projectCard"><div className="projectVisual visualCommerce"><div className="commerceOrb"><ShoppingBag /></div><h3>Forma.<br />Função.<br /><em>Desejo.</em></h3><div className="commercePrice">E-commerce premium</div></div><div className="projectInfo"><div><span>E-COMMERCE · BRANDING</span><h3>Loja digital premium</h3></div><a href="#contato" aria-label="Conhecer projeto de e-commerce"><ArrowRight /></a></div></Reveal>
+            <Reveal className="projectCard"><div className="projectVisual realProjectVisual paolaProject"><img src="/showcase/paola-desktop.png" alt="Página inicial do site da psicóloga Paola Milani" /></div><div className="projectInfo"><div><span>WEBSITE · PSICOLOGIA · UX/UI</span><h3>Paola Milani</h3></div><a href="#contato" aria-label="Conhecer projeto Paola Milani"><ArrowRight /></a></div></Reveal>
           </div>
         </div>
       </section>
