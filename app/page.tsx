@@ -50,9 +50,36 @@ const steps = [
 ];
 
 const plans = [
-  { name: "Start", description: "Para colocar uma ideia no ar com qualidade desde o primeiro dia.", items: ["Landing page estratégica", "Design responsivo", "SEO essencial", "Integração de contato"], featured: false },
-  { name: "Business", description: "Para empresas que precisam vender confiança e gerar oportunidades.", items: ["Site completo sob medida", "UX/UI personalizado", "SEO técnico", "Analytics e conversão", "Suporte pós-lançamento"], featured: true },
-  { name: "Premium", description: "Para produtos e operações que exigem tecnologia de alto nível.", items: ["Projeto digital avançado", "Sistema ou e-commerce", "Integrações personalizadas", "Performance contínua", "Evolução prioritária"], featured: false },
+  {
+    code: "01",
+    name: "Presença",
+    eyebrow: "Para começar com direção",
+    description: "Uma página estratégica para apresentar sua oferta e transformar visitas em contatos.",
+    ideal: "Profissionais e negócios em lançamento",
+    items: ["Landing page personalizada", "Estrutura focada em conversão", "Design responsivo", "SEO essencial", "WhatsApp ou formulário integrado"],
+    cta: "Quero lançar meu site",
+    featured: false,
+  },
+  {
+    code: "02",
+    name: "Autoridade",
+    eyebrow: "Para crescer com confiança",
+    description: "Um site institucional completo para posicionar sua marca e gerar oportunidades.",
+    ideal: "Empresas e profissionais estabelecidos",
+    items: ["Site institucional sob medida", "UX/UI alinhado à sua marca", "SEO técnico e Analytics", "Páginas estratégicas de serviço", "Suporte pós-lançamento"],
+    cta: "Quero fortalecer minha marca",
+    featured: true,
+  },
+  {
+    code: "03",
+    name: "Evolução",
+    eyebrow: "Para projetos mais complexos",
+    description: "Uma solução digital planejada para modernizar, integrar e ampliar sua operação.",
+    ideal: "Reformulações, integrações e sistemas",
+    items: ["Diagnóstico e estratégia digital", "Reformulação completa de site", "Integrações personalizadas", "Sistema web sob medida", "Evolução e suporte prioritário"],
+    cta: "Quero discutir meu projeto",
+    featured: false,
+  },
 ];
 
 const faq = [
@@ -329,8 +356,18 @@ export default function Home() {
 
       <section className="section pricingSection" id="planos">
         <div className="container">
-          <SectionTitle eyebrow="Formatos de projeto" title={<>Uma solução para cada <span>momento do negócio.</span></>} text="O escopo final é personalizado. Os formatos abaixo ajudam a identificar o melhor ponto de partida." />
-          <div className="pricingGrid">{plans.map((plan) => <Reveal className={`priceCard ${plan.featured ? "featured" : ""}`} key={plan.name}>{plan.featured && <div className="popularBadge">Mais contratado</div>}<span className="planLabel">APOLLUN / {plan.name.toUpperCase()}</span><h3>{plan.name}</h3><p>{plan.description}</p><div className="priceLine"><strong>Sob medida</strong><span>escopo personalizado</span></div><ul>{plan.items.map((item) => <li key={item}><Check size={15} />{item}</li>)}</ul><button className={`button ${plan.featured ? "primary" : "secondary"}`} type="button" onClick={() => setBriefingOpen(true)}>Quero este plano <ArrowRight size={16} /></button></Reveal>)}</div>
+          <SectionTitle eyebrow="Encontre o formato ideal" title={<>Um ponto de partida para <span>cada objetivo.</span></>} text="Escolha o cenário mais próximo do seu momento. Depois, personalizamos o escopo para a realidade da sua empresa." />
+          <div className="pricingGrid">{plans.map((plan) => <Reveal className={`priceCard ${plan.featured ? "featured" : ""}`} key={plan.name}>
+            <div className="planTop"><span className="planLabel">APOLLUN / {plan.code}</span>{plan.featured && <div className="popularBadge">Mais escolhido</div>}</div>
+            <span className="planEyebrow">{plan.eyebrow}</span>
+            <h3>{plan.name}</h3>
+            <p>{plan.description}</p>
+            <div className="planIdeal"><span>Ideal para</span><strong>{plan.ideal}</strong></div>
+            <div className="priceLine"><span>Investimento</span><strong>Personalizado</strong><small>definido após o briefing</small></div>
+            <ul>{plan.items.map((item) => <li key={item}><span className="planCheck"><Check size={13} /></span>{item}</li>)}</ul>
+            <button className={`button ${plan.featured ? "primary" : "secondary"}`} type="button" onClick={() => setBriefingOpen(true)}>{plan.cta} <ArrowRight size={16} /></button>
+          </Reveal>)}</div>
+          <div className="pricingHelp"><div><strong>Ainda não sabe qual formato escolher?</strong><span>Conte sua ideia e indicamos o caminho mais adequado, sem compromisso.</span></div><button type="button" onClick={() => setBriefingOpen(true)}>Receber recomendação <ArrowRight size={16} /></button></div>
         </div>
       </section>
 
