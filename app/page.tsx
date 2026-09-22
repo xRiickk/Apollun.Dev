@@ -79,6 +79,7 @@ const themeOptions = ["Predominantemente claro", "Predominantemente escuro", "Mi
 const projectDeadlines = ["Assim que possível", "Em até 30 dias", "Entre 30 e 60 dias", "Ainda não tenho prazo"];
 const availableAssets = ["Domínio", "Hospedagem", "Identidade visual", "Textos", "Fotografias", "Vídeos", "Depoimentos de clientes"];
 const whatsappNumber = "5511940312713";
+const SHOW_TESTIMONIALS = false;
 
 function Reveal({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
   const reduce = useReducedMotion();
@@ -333,12 +334,12 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section testimonialSection">
+      {SHOW_TESTIMONIALS && <section className="section testimonialSection">
         <div className="container testimonialLayout">
           <div><span className="eyebrow"><i />Experiência Apollun</span><h2>O padrão de percepção que buscamos em <span>cada entrega.</span></h2><div className="sliderControls"><button onClick={() => setTestimonial((testimonial + 2) % 3)} aria-label="Anterior">←</button><button onClick={() => setTestimonial((testimonial + 1) % 3)} aria-label="Próximo">→</button></div></div>
           <div className="quoteWindow"><motion.div key={testimonial} className="quoteCard" initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: .45 }}><div className="stars">{Array.from({ length: 5 }).map((_, i) => <Star key={i} size={15} fill="currentColor" />)}</div><blockquote>“{quoteCards[testimonial][1]}”</blockquote><div className="quoteMeta"><div className="avatar">A</div><div><strong>{quoteCards[testimonial][0]}</strong><span>Compromisso Apollun.Dev</span></div></div></motion.div></div>
         </div>
-      </section>
+      </section>}
 
       <section className="section faqSection" id="faq">
         <div className="container faqLayout"><SectionTitle eyebrow="Perguntas frequentes" title={<>Tudo claro antes de <span>começarmos.</span></>} /><div className="faqList">{faq.map(([question, answer]) => <details key={question}><summary>{question}<ChevronDown size={18} /></summary><p>{answer}</p></details>)}</div></div>
