@@ -80,6 +80,16 @@ const plans = [
     cta: "Quero discutir meu projeto",
     featured: false,
   },
+  {
+    code: "04",
+    name: "Essência",
+    eyebrow: "Da identidade à presença digital",
+    description: "Uma solução completa para construir sua marca com coerência, personalidade e presença profissional na internet.",
+    ideal: "Marcas novas ou em fase de reposicionamento",
+    items: ["Identidade visual completa", "Logotipo e sistema de marca", "Paleta de cores e tipografia", "Site personalizado", "Experiência digital coerente"],
+    cta: "Solicitar este plano",
+    featured: false,
+  },
 ];
 
 const faq = [
