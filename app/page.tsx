@@ -84,7 +84,7 @@ const plans = [
     code: "04",
     name: "Essência",
     eyebrow: "Da identidade à presença digital",
-    description: "Uma solução completa para construir sua marca com coerência, personalidade e presença profissional na internet.",
+    description: "Um plano para construir uma base sólida, coerente e profissional para a marca, da identidade visual à presença na internet.",
     ideal: "Marcas novas ou em fase de reposicionamento",
     items: ["Identidade visual completa", "Logotipo e sistema de marca", "Paleta de cores e tipografia", "Site personalizado", "Experiência digital coerente"],
     cta: "Solicitar este plano",
