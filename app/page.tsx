@@ -189,6 +189,34 @@ function MockScreen({ project, size }: { project: (typeof showcaseProjects)[numb
   );
 }
 
+function QuickBriefingCard({ onOpenFull }: { onOpenFull: () => void }) {
+  const [step, setStep] = useState(0);
+  const [name, setName] = useState("");
+  const [business, setBusiness] = useState("");
+  const [projects, setProjects] = useState<string[]>([]);
+  const [goal, setGoal] = useState("");
+  const toggleProject = (item: string) => setProjects((current) => current.includes(item) ? current.filter((value) => value !== item) : [...current, item]);
+  const canContinue = step === 0 ? Boolean(name.trim() && business.trim()) : step === 1 ? projects.length > 0 : Boolean(goal);
+
+  const submit = () => {
+    const message = `Olá! Vim pelo site da Apollun.Dev e gostaria de solicitar um orçamento.\n\n*CONTATO*\nNome: ${name.trim()}\nEmpresa e segmento: ${business.trim()}\n\n*PROJETO*\nTipo: ${projects.join(", ")}\nObjetivo: ${goal}`;
+    window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, "_blank", "noopener,noreferrer");
+  };
+
+  return (
+    <motion.div className="quickBriefingCard" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .8, delay: .18, ease: [0.22, 1, 0.36, 1] }}>
+      <div className="quickBriefingHead"><div><span>Orçamento rápido</span><h2>Conte sobre o seu projeto</h2></div><small>Etapa {step + 1} de 3 · cerca de 1 minuto</small></div>
+      <div className="quickProgress"><span style={{ width: `${((step + 1) / 3) * 100}%` }} /></div>
+      <form onSubmit={(event) => { event.preventDefault(); if (step < 2) setStep(step + 1); else submit(); }}>
+        {step === 0 && <fieldset className="quickFields"><legend>Quem está pedindo?</legend><label>Seu nome<input autoFocus value={name} onChange={(event) => setName(event.target.value)} placeholder="Como podemos chamar você?" /></label><label>Empresa e segmento<input value={business} onChange={(event) => setBusiness(event.target.value)} placeholder="Ex.: Clínica Sorriso, odontologia" /></label></fieldset>}
+        {step === 1 && <fieldset className="quickChoices"><legend>O que você quer criar?</legend><p>Você pode selecionar mais de uma opção.</p><div>{projectOptions.slice(0, 5).map((item) => <button type="button" key={item} className={projects.includes(item) ? "selected" : ""} onClick={() => toggleProject(item)} aria-pressed={projects.includes(item)}><span>{projects.includes(item) && <Check size={14} />}</span>{item}</button>)}</div></fieldset>}
+        {step === 2 && <fieldset className="quickChoices"><legend>Qual é o principal objetivo?</legend><div>{projectGoals.slice(0, 4).map((item) => <button type="button" key={item} className={goal === item ? "selected" : ""} onClick={() => setGoal(item)} aria-pressed={goal === item}><span>{goal === item && <Check size={14} />}</span>{item}</button>)}</div></fieldset>}
+        <div className="quickFooter"><button type="button" className="quickBack" onClick={() => step === 0 ? onOpenFull() : setStep(step - 1)}>{step === 0 ? "Prefiro detalhar" : "Voltar"}</button><button type="submit" className="quickNext" disabled={!canContinue}>{step === 2 ? "Enviar pelo WhatsApp" : "Continuar"}<ArrowRight size={16} /></button></div>
+      </form>
+    </motion.div>
+  );
+}
+
 function BriefingModal({ onClose }: { onClose: () => void }) {
   const [mode, setMode] = useState<"quick" | "full">("quick");
   const [step, setStep] = useState(0);
@@ -318,14 +346,14 @@ export default function Home() {
         {menuOpen && <motion.nav className="mobileNav" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}>{navItems.map(([label, href]) => <a href={href} key={href} onClick={() => setMenuOpen(false)}>{label}</a>)}<button className="mobileThemeToggle" onClick={toggleTheme}>{theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}{theme === "dark" ? "Ativar modo claro" : "Ativar modo escuro"}</button><span className="availability"><i />Disponível agora</span><button className="mobileBriefingLink" type="button" onClick={() => { setMenuOpen(false); setBriefingOpen(true); }}>Iniciar projeto</button></motion.nav>}
       </header>
 
-      <section className="hero" id="inicio">
+      <section className="hero heroConversion" id="inicio">
         <div className="heroGrid" />
         <div className="heroGlow glowOne" /><div className="heroGlow glowTwo" />
         <div className="container heroInner">
           <motion.div className="heroCopy" initial={{ opacity: 0, y: 34 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .9, ease: [0.22, 1, 0.36, 1] }}>
-            <span className="eyebrow"><i />Tecnologia para empresas que querem avançar</span>
-            <h1>Sites modernos que transformam <span>visitantes em clientes.</span></h1>
-            <p>Sites e landing pages rápidos, claros e feitos para gerar contatos — com estratégia, design e desenvolvimento em um só lugar.</p>
+            <span className="eyebrow"><i />Disponível agora para novos projetos</span>
+            <h1>Sites que transformam <span>visitantes em clientes.</span></h1>
+            <p>Sites e landing pages rápidos, claros e feitos para gerar contatos. Você fala direto com quem desenvolve.</p>
             <div className="heroActions">
               <button className="button primary" type="button" onClick={() => setBriefingOpen(true)}>Solicitar orçamento <ArrowRight size={17} /></button>
               <a className="button secondary" href={whatsappUrl} target="_blank" rel="noreferrer"><MessageCircle size={17} />Falar no WhatsApp</a>
@@ -333,7 +361,7 @@ export default function Home() {
             <a className="heroProjectsLink" href="#portfolio">Ver projetos realizados <ArrowRight size={14} /></a>
             <div className="badges">{["Alta Performance", "SEO", "UX/UI", "Responsivo"].map((item) => <span key={item}><Check size={13} />{item}</span>)}</div>
           </motion.div>
-          <DeviceMockup />
+          <QuickBriefingCard onOpenFull={() => setBriefingOpen(true)} />
         </div>
         <a className="scrollCue" href="#clientes"><span />Explore</a>
       </section>
@@ -345,7 +373,7 @@ export default function Home() {
       <section className="section" id="servicos">
         <div className="container">
           <SectionTitle eyebrow="O que fazemos" title={<>Tudo o que sua presença digital precisa para <span>crescer.</span></>} text="Da estratégia ao código, entregamos experiências completas e construídas para gerar valor real." />
-          <div className="serviceGrid">{services.map((service, index) => { const Icon = service.icon; return <Reveal className="serviceCard" delay={(index % 3) * .08} key={service.title}><div className="serviceIcon"><Icon size={22} /></div><span className="cardNumber">0{index + 1}</span><h3>{service.title}</h3><p>{service.text}</p><a href="#contato" aria-label={`Saiba mais sobre ${service.title}`}>Explorar <ArrowRight size={14} /></a></Reveal>; })}</div>
+          <div className="serviceGrid serviceList">{services.map((service, index) => { const Icon = service.icon; return <Reveal className="serviceCard" delay={(index % 3) * .08} key={service.title}><div className="serviceIcon"><Icon size={22} /></div><span className="cardNumber">0{index + 1}</span><h3>{service.title}</h3><p>{service.text}</p><a href="#contato" aria-label={`Saiba mais sobre ${service.title}`}>Explorar <ArrowRight size={14} /></a></Reveal>; })}</div>
         </div>
       </section>
 
@@ -366,7 +394,7 @@ export default function Home() {
       <section className="section portfolioSection" id="portfolio">
         <div className="container">
           <SectionTitle eyebrow="Projetos em destaque" title={<>Experiências pensadas para <span>ser lembradas.</span></>} text="Direções de produto que mostram como estratégia, identidade e tecnologia podem trabalhar como uma só coisa." />
-          <div className="projectGrid">
+          <div className="projectGrid editorialProjects">
             <Reveal className="projectCard projectWide"><div className="projectVisual realProjectVisual nieroProject"><img src="/showcase/niero-desktop.png" alt="Página inicial do site Srta. Niero" /></div><div className="projectInfo"><div><span>WEBSITE · BRANDING</span><h3>Srta. Niero</h3></div><button type="button" onClick={() => setBriefingOpen(true)} aria-label="Solicitar um site inspirado no projeto Srta. Niero">Quero um site assim <ArrowRight size={15} /></button></div></Reveal>
             <Reveal className="projectCard"><div className="projectVisual realProjectVisual apollunProject"><img src="/showcase/apollun-desktop.png" alt="Página inicial do site Apollun.Dev" /></div><div className="projectInfo"><div><span>WEBSITE · UX/UI · DESENVOLVIMENTO</span><h3>Apollun.Dev</h3></div><button type="button" onClick={() => setBriefingOpen(true)} aria-label="Solicitar um site inspirado no projeto Apollun.Dev">Quero um site assim <ArrowRight size={15} /></button></div></Reveal>
             <Reveal className="projectCard"><div className="projectVisual realProjectVisual paolaProject"><img src="/showcase/paola-desktop.png" alt="Página inicial do site da psicóloga Paola Milani" /></div><div className="projectInfo"><div><span>WEBSITE · PSICOLOGIA · UX/UI</span><h3>Paola Milani</h3></div><button type="button" onClick={() => setBriefingOpen(true)} aria-label="Solicitar um site inspirado no projeto Paola Milani">Quero um site assim <ArrowRight size={15} /></button></div></Reveal>
