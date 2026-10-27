@@ -6,7 +6,7 @@ import {
   ArrowRight, BarChart3, Blocks, Check, ChevronDown, Code2, Gauge,
   Globe2, Layers3, Menu, MonitorSmartphone, Search, ShieldCheck,
   Moon, Sparkles, Star, Sun, X, Zap, HeartPulse, Scale,
-  Utensils, Building2, Dumbbell, BriefcaseBusiness, Wrench, RefreshCw,
+  Utensils, Building2, Dumbbell, BriefcaseBusiness, Wrench, RefreshCw, MessageCircle,
 } from "lucide-react";
 
 const navItems = [
@@ -190,6 +190,7 @@ function MockScreen({ project, size }: { project: (typeof showcaseProjects)[numb
 }
 
 function BriefingModal({ onClose }: { onClose: () => void }) {
+  const [mode, setMode] = useState<"quick" | "full">("quick");
   const [step, setStep] = useState(0);
   const [name, setName] = useState("");
   const [business, setBusiness] = useState("");
@@ -218,8 +219,15 @@ function BriefingModal({ onClose }: { onClose: () => void }) {
   }, [onClose]);
 
   const toggleItem = (item: string, values: string[], setter: (items: string[]) => void) => setter(values.includes(item) ? values.filter((value) => value !== item) : [...values, item]);
+  const lastStep = mode === "quick" ? 2 : 6;
   const canContinue = step === 0 ? Boolean(name.trim() && business.trim() && segment.trim()) : step === 1 ? projects.length > 0 : step === 2 ? Boolean(goal) : step === 3 ? Boolean(logoStatus && paletteStatus) : step === 4 ? Boolean(styles.length && visualTheme) : step === 5 ? Boolean(stage) : Boolean(deadline);
   const needsCurrentUrl = projects.includes("Reformulação de site") || stage === "Já tenho um site e quero reformular";
+
+  const sendQuickBriefing = () => {
+    const message = `Olá! Vim pelo site da Apollun.Dev e gostaria de solicitar um orçamento.\n\n*CONTATO*\nNome: ${name.trim()}\nEmpresa: ${business.trim()}\nSegmento: ${segment.trim()}\n\n*PROJETO*\nTipo: ${projects.join(", ")}\nObjetivo: ${goal}\n\nPreenchi o briefing rápido e posso explicar os demais detalhes durante a conversa.`;
+    const destination = whatsappNumber ? `https://wa.me/${whatsappNumber}` : "https://wa.me/";
+    window.open(`${destination}?text=${encodeURIComponent(message)}`, "_blank", "noopener,noreferrer");
+  };
 
   const sendBriefing = () => {
     const assetLines = availableAssets.map((item) => `${assets.includes(item) ? "✓" : "✗"} ${item}`).join("\n");
@@ -232,12 +240,12 @@ function BriefingModal({ onClose }: { onClose: () => void }) {
     <motion.div className="briefingOverlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
       <motion.div className="briefingModal" role="dialog" aria-modal="true" aria-labelledby="briefing-title" initial={{ opacity: 0, y: 24, scale: .97 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: .35, ease: [0.22, 1, 0.36, 1] }}>
         <div className="briefingHeader">
-          <div><span>Briefing Apollun.Dev</span><strong id="briefing-title">Conte-nos sobre seu projeto.</strong></div>
+          <div><span>{mode === "quick" ? "Orçamento rápido" : "Briefing Apollun.Dev"}</span><strong id="briefing-title">{mode === "quick" ? "Conte o essencial em cerca de 1 minuto." : "Conte-nos sobre seu projeto."}</strong></div>
           <button type="button" onClick={onClose} aria-label="Fechar briefing"><X size={19} /></button>
         </div>
-        <div className="briefingProgress"><span style={{ width: `${((step + 1) / 7) * 100}%` }} /></div>
-        <form onSubmit={(event) => { event.preventDefault(); if (step < 6) setStep(step + 1); else sendBriefing(); }}>
-          <div className="briefingStepMeta"><span>Etapa {step + 1} de 7</span><small>Cerca de 4 minutos</small></div>
+        <div className="briefingProgress"><span style={{ width: `${((step + 1) / (lastStep + 1)) * 100}%` }} /></div>
+        <form onSubmit={(event) => { event.preventDefault(); if (step < lastStep) setStep(step + 1); else if (mode === "quick") sendQuickBriefing(); else sendBriefing(); }}>
+          <div className="briefingStepMeta"><span>Etapa {step + 1} de {lastStep + 1}</span><small>{mode === "quick" ? "Cerca de 1 minuto" : "Cerca de 4 minutos"}</small><button type="button" className="briefingModeSwitch" onClick={() => { setMode(mode === "quick" ? "full" : "quick"); setStep(0); }}>{mode === "quick" ? "Prefiro o briefing completo" : "Usar versão rápida"}</button></div>
 
           {step === 0 && <fieldset className="briefingFields"><legend>Primeiro, queremos conhecer você.</legend><p>Essas informações ajudam a entender o contexto do projeto.</p><label>Nome<input autoFocus value={name} onChange={(event) => setName(event.target.value)} placeholder="Como podemos chamar você?" /></label><label>Empresa ou negócio<input value={business} onChange={(event) => setBusiness(event.target.value)} placeholder="Nome da sua empresa" /></label><label>Segmento<input value={segment} onChange={(event) => setSegment(event.target.value)} placeholder="Ex.: clínica, advocacia, consultoria" /></label><label className="briefingFullField">Instagram ou site atual <small>Opcional</small><input value={onlinePresence} onChange={(event) => setOnlinePresence(event.target.value)} placeholder="@suaempresa ou https://..." /></label></fieldset>}
 
@@ -245,15 +253,15 @@ function BriefingModal({ onClose }: { onClose: () => void }) {
 
           {step === 2 && <fieldset className="briefingChoices"><legend>Qual é o principal objetivo?</legend><p>Assim podemos pensar no site como uma ferramenta para o seu negócio.</p><div>{projectGoals.map((item) => <button type="button" key={item} className={goal === item ? "selected" : ""} onClick={() => setGoal(item)} aria-pressed={goal === item}><span>{goal === item && <Check size={15} />}</span>{item}</button>)}</div></fieldset>}
 
-          {step === 3 && <fieldset className="briefingChoices briefingIdentity"><legend>Como está a identidade da marca?</legend><p>Não precisa dominar design. Escolha as opções que mais se aproximam da sua realidade.</p><span className="briefingGroupLabel">Logotipo</span><div className="briefingOptionGrid">{logoOptions.map((item) => <button type="button" key={item} className={logoStatus === item ? "selected" : ""} onClick={() => setLogoStatus(item)} aria-pressed={logoStatus === item}><span>{logoStatus === item && <Check size={15} />}</span>{item}</button>)}</div><span className="briefingGroupLabel">Paleta de cores</span><div className="briefingOptionGrid">{paletteOptions.map((item) => <button type="button" key={item} className={paletteStatus === item ? "selected" : ""} onClick={() => setPaletteStatus(item)} aria-pressed={paletteStatus === item}><span>{paletteStatus === item && <Check size={15} />}</span>{item}</button>)}</div>{(paletteStatus === "Já tenho as cores da marca" || paletteStatus === "Tenho algumas cores em mente") && <label className="briefingInlineField">Quais cores?<input value={paletteDetails} onChange={(event) => setPaletteDetails(event.target.value)} placeholder="Ex.: azul-marinho, branco e dourado ou #050816" /></label>}</fieldset>}
+          {mode === "full" && step === 3 && <fieldset className="briefingChoices briefingIdentity"><legend>Como está a identidade da marca?</legend><p>Não precisa dominar design. Escolha as opções que mais se aproximam da sua realidade.</p><span className="briefingGroupLabel">Logotipo</span><div className="briefingOptionGrid">{logoOptions.map((item) => <button type="button" key={item} className={logoStatus === item ? "selected" : ""} onClick={() => setLogoStatus(item)} aria-pressed={logoStatus === item}><span>{logoStatus === item && <Check size={15} />}</span>{item}</button>)}</div><span className="briefingGroupLabel">Paleta de cores</span><div className="briefingOptionGrid">{paletteOptions.map((item) => <button type="button" key={item} className={paletteStatus === item ? "selected" : ""} onClick={() => setPaletteStatus(item)} aria-pressed={paletteStatus === item}><span>{paletteStatus === item && <Check size={15} />}</span>{item}</button>)}</div>{(paletteStatus === "Já tenho as cores da marca" || paletteStatus === "Tenho algumas cores em mente") && <label className="briefingInlineField">Quais cores?<input value={paletteDetails} onChange={(event) => setPaletteDetails(event.target.value)} placeholder="Ex.: azul-marinho, branco e dourado ou #050816" /></label>}</fieldset>}
 
-          {step === 4 && <fieldset className="briefingChoices briefingIdentity"><legend>Qual visual combina com sua empresa?</legend><p>Selecione até três estilos e escolha a aparência geral.</p><span className="briefingGroupLabel">Estilo desejado</span><div className="briefingOptionGrid">{visualStyles.map((item) => <button type="button" key={item} className={styles.includes(item) ? "selected" : ""} disabled={!styles.includes(item) && styles.length >= 3} onClick={() => toggleItem(item, styles, setStyles)} aria-pressed={styles.includes(item)}><span>{styles.includes(item) && <Check size={15} />}</span>{item}</button>)}</div><span className="briefingGroupLabel">Preferência de tema</span><div className="briefingOptionGrid">{themeOptions.map((item) => <button type="button" key={item} className={visualTheme === item ? "selected" : ""} onClick={() => setVisualTheme(item)} aria-pressed={visualTheme === item}><span>{visualTheme === item && <Check size={15} />}</span>{item}</button>)}</div></fieldset>}
+          {mode === "full" && step === 4 && <fieldset className="briefingChoices briefingIdentity"><legend>Qual visual combina com sua empresa?</legend><p>Selecione até três estilos e escolha a aparência geral.</p><span className="briefingGroupLabel">Estilo desejado</span><div className="briefingOptionGrid">{visualStyles.map((item) => <button type="button" key={item} className={styles.includes(item) ? "selected" : ""} disabled={!styles.includes(item) && styles.length >= 3} onClick={() => toggleItem(item, styles, setStyles)} aria-pressed={styles.includes(item)}><span>{styles.includes(item) && <Check size={15} />}</span>{item}</button>)}</div><span className="briefingGroupLabel">Preferência de tema</span><div className="briefingOptionGrid">{themeOptions.map((item) => <button type="button" key={item} className={visualTheme === item ? "selected" : ""} onClick={() => setVisualTheme(item)} aria-pressed={visualTheme === item}><span>{visualTheme === item && <Check size={15} />}</span>{item}</button>)}</div></fieldset>}
 
-          {step === 5 && <fieldset className="briefingChoices briefingIdentity"><legend>Em qual etapa o projeto está?</legend><p>Adaptamos o processo ao que você já possui.</p><div>{projectStages.map((item) => <button type="button" key={item} className={stage === item ? "selected" : ""} onClick={() => setStage(item)} aria-pressed={stage === item}><span>{stage === item && <Check size={15} />}</span>{item}</button>)}</div>{needsCurrentUrl && <label className="briefingInlineField">Endereço do site atual <small>Opcional</small><input value={currentUrl} onChange={(event) => setCurrentUrl(event.target.value)} placeholder="https://seusite.com.br" /></label>}<span className="briefingGroupLabel">Materiais disponíveis <small>Opcional</small></span><div className="assetGrid">{availableAssets.map((item) => <button type="button" key={item} className={assets.includes(item) ? "selected" : ""} onClick={() => toggleItem(item, assets, setAssets)} aria-pressed={assets.includes(item)}><span>{assets.includes(item) && <Check size={13} />}</span>{item}</button>)}</div></fieldset>}
+          {mode === "full" && step === 5 && <fieldset className="briefingChoices briefingIdentity"><legend>Em qual etapa o projeto está?</legend><p>Adaptamos o processo ao que você já possui.</p><div>{projectStages.map((item) => <button type="button" key={item} className={stage === item ? "selected" : ""} onClick={() => setStage(item)} aria-pressed={stage === item}><span>{stage === item && <Check size={15} />}</span>{item}</button>)}</div>{needsCurrentUrl && <label className="briefingInlineField">Endereço do site atual <small>Opcional</small><input value={currentUrl} onChange={(event) => setCurrentUrl(event.target.value)} placeholder="https://seusite.com.br" /></label>}<span className="briefingGroupLabel">Materiais disponíveis <small>Opcional</small></span><div className="assetGrid">{availableAssets.map((item) => <button type="button" key={item} className={assets.includes(item) ? "selected" : ""} onClick={() => toggleItem(item, assets, setAssets)} aria-pressed={assets.includes(item)}><span>{assets.includes(item) && <Check size={13} />}</span>{item}</button>)}</div></fieldset>}
 
-          {step === 6 && <fieldset className="briefingDetails"><legend>Últimos detalhes.</legend><p>Estamos quase lá. Conte o essencial e revise o resumo do seu projeto.</p><span className="briefingGroupLabel">Quando gostaria de lançar?</span><div className="briefingDeadlineGrid">{projectDeadlines.map((item) => <button type="button" key={item} className={deadline === item ? "selected" : ""} onClick={() => setDeadline(item)} aria-pressed={deadline === item}><span>{deadline === item && <Check size={13} />}</span>{item}</button>)}</div><label>Sites ou marcas de referência <small>Opcional</small><input value={references} onChange={(event) => setReferences(event.target.value)} placeholder="Cole links ou escreva os nomes das referências" /></label><label>Sobre sua empresa e o projeto <small>Opcional</small><textarea value={details} onChange={(event) => setDetails(event.target.value)} placeholder="Conte o que deseja construir e qualquer informação importante..." rows={3} /></label><div className="briefingSummary"><span>Resumo do briefing</span><div><p><small>Projeto</small><strong>{projects.join(", ")}</strong></p><p><small>Objetivo</small><strong>{goal}</strong></p><p><small>Direção visual</small><strong>{styles.join(", ")}</strong></p><p><small>Prazo</small><strong>{deadline || "Selecione uma opção"}</strong></p></div></div></fieldset>}
+          {mode === "full" && step === 6 && <fieldset className="briefingDetails"><legend>Últimos detalhes.</legend><p>Estamos quase lá. Conte o essencial e revise o resumo do seu projeto.</p><span className="briefingGroupLabel">Quando gostaria de lançar?</span><div className="briefingDeadlineGrid">{projectDeadlines.map((item) => <button type="button" key={item} className={deadline === item ? "selected" : ""} onClick={() => setDeadline(item)} aria-pressed={deadline === item}><span>{deadline === item && <Check size={13} />}</span>{item}</button>)}</div><label>Sites ou marcas de referência <small>Opcional</small><input value={references} onChange={(event) => setReferences(event.target.value)} placeholder="Cole links ou escreva os nomes das referências" /></label><label>Sobre sua empresa e o projeto <small>Opcional</small><textarea value={details} onChange={(event) => setDetails(event.target.value)} placeholder="Conte o que deseja construir e qualquer informação importante..." rows={3} /></label><div className="briefingSummary"><span>Resumo do briefing</span><div><p><small>Projeto</small><strong>{projects.join(", ")}</strong></p><p><small>Objetivo</small><strong>{goal}</strong></p><p><small>Direção visual</small><strong>{styles.join(", ")}</strong></p><p><small>Prazo</small><strong>{deadline || "Selecione uma opção"}</strong></p></div></div></fieldset>}
 
-          <div className="briefingFooter"><button type="button" className="briefingBack" onClick={() => step === 0 ? onClose() : setStep(step - 1)}>{step === 0 ? "Agora não" : "Voltar"}</button><button type="submit" className="briefingNext" disabled={!canContinue}>{step === 6 ? "Enviar pelo WhatsApp" : "Continuar"}<ArrowRight size={16} /></button></div>
+          <div className="briefingFooter"><button type="button" className="briefingBack" onClick={() => step === 0 ? onClose() : setStep(step - 1)}>{step === 0 ? "Agora não" : "Voltar"}</button><button type="submit" className="briefingNext" disabled={!canContinue}>{step === lastStep ? "Enviar pelo WhatsApp" : "Continuar"}<ArrowRight size={16} /></button></div>
         </form>
       </motion.div>
     </motion.div>
@@ -290,6 +298,7 @@ export default function Home() {
     ["Qualidade que aparece", "Do primeiro contato ao último detalhe da interface, a experiência transmite cuidado, domínio e confiança."],
     ["Tecnologia que acompanha", "Criamos bases sólidas para que o produto continue rápido, seguro e pronto para evoluir."],
   ];
+  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent("Olá! Vim pelo site da Apollun.Dev e quero conversar sobre um projeto.")}`;
 
   return (
     <main>
@@ -316,11 +325,12 @@ export default function Home() {
           <motion.div className="heroCopy" initial={{ opacity: 0, y: 34 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .9, ease: [0.22, 1, 0.36, 1] }}>
             <span className="eyebrow"><i />Tecnologia para empresas que querem avançar</span>
             <h1>Sites modernos que transformam <span>visitantes em clientes.</span></h1>
-            <p>Transformamos ideias em experiências digitais de alta performance, unindo estratégia, design e tecnologia para criar negócios mais fortes.</p>
+            <p>Sites e landing pages rápidos, claros e feitos para gerar contatos — com estratégia, design e desenvolvimento em um só lugar.</p>
             <div className="heroActions">
               <button className="button primary" type="button" onClick={() => setBriefingOpen(true)}>Solicitar orçamento <ArrowRight size={17} /></button>
-              <a className="button secondary" href="#portfolio">Ver projetos</a>
+              <a className="button secondary" href={whatsappUrl} target="_blank" rel="noreferrer"><MessageCircle size={17} />Falar no WhatsApp</a>
             </div>
+            <a className="heroProjectsLink" href="#portfolio">Ver projetos realizados <ArrowRight size={14} /></a>
             <div className="badges">{["Alta Performance", "SEO", "UX/UI", "Responsivo"].map((item) => <span key={item}><Check size={13} />{item}</span>)}</div>
           </motion.div>
           <DeviceMockup />
@@ -357,9 +367,9 @@ export default function Home() {
         <div className="container">
           <SectionTitle eyebrow="Projetos em destaque" title={<>Experiências pensadas para <span>ser lembradas.</span></>} text="Direções de produto que mostram como estratégia, identidade e tecnologia podem trabalhar como uma só coisa." />
           <div className="projectGrid">
-            <Reveal className="projectCard projectWide"><div className="projectVisual realProjectVisual nieroProject"><img src="/showcase/niero-desktop.png" alt="Página inicial do site Srta. Niero" /></div><div className="projectInfo"><div><span>WEBSITE · BRANDING</span><h3>Srta. Niero</h3></div><a href="#contato" aria-label="Conhecer projeto Srta. Niero"><ArrowRight /></a></div></Reveal>
-            <Reveal className="projectCard"><div className="projectVisual realProjectVisual apollunProject"><img src="/showcase/apollun-desktop.png" alt="Página inicial do site Apollun.Dev" /></div><div className="projectInfo"><div><span>WEBSITE · UX/UI · DESENVOLVIMENTO</span><h3>Apollun.Dev</h3></div><a href="#contato" aria-label="Conhecer projeto Apollun.Dev"><ArrowRight /></a></div></Reveal>
-            <Reveal className="projectCard"><div className="projectVisual realProjectVisual paolaProject"><img src="/showcase/paola-desktop.png" alt="Página inicial do site da psicóloga Paola Milani" /></div><div className="projectInfo"><div><span>WEBSITE · PSICOLOGIA · UX/UI</span><h3>Paola Milani</h3></div><a href="#contato" aria-label="Conhecer projeto Paola Milani"><ArrowRight /></a></div></Reveal>
+            <Reveal className="projectCard projectWide"><div className="projectVisual realProjectVisual nieroProject"><img src="/showcase/niero-desktop.png" alt="Página inicial do site Srta. Niero" /></div><div className="projectInfo"><div><span>WEBSITE · BRANDING</span><h3>Srta. Niero</h3></div><button type="button" onClick={() => setBriefingOpen(true)} aria-label="Solicitar um site inspirado no projeto Srta. Niero">Quero um site assim <ArrowRight size={15} /></button></div></Reveal>
+            <Reveal className="projectCard"><div className="projectVisual realProjectVisual apollunProject"><img src="/showcase/apollun-desktop.png" alt="Página inicial do site Apollun.Dev" /></div><div className="projectInfo"><div><span>WEBSITE · UX/UI · DESENVOLVIMENTO</span><h3>Apollun.Dev</h3></div><button type="button" onClick={() => setBriefingOpen(true)} aria-label="Solicitar um site inspirado no projeto Apollun.Dev">Quero um site assim <ArrowRight size={15} /></button></div></Reveal>
+            <Reveal className="projectCard"><div className="projectVisual realProjectVisual paolaProject"><img src="/showcase/paola-desktop.png" alt="Página inicial do site da psicóloga Paola Milani" /></div><div className="projectInfo"><div><span>WEBSITE · PSICOLOGIA · UX/UI</span><h3>Paola Milani</h3></div><button type="button" onClick={() => setBriefingOpen(true)} aria-label="Solicitar um site inspirado no projeto Paola Milani">Quero um site assim <ArrowRight size={15} /></button></div></Reveal>
           </div>
         </div>
       </section>
