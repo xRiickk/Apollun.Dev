@@ -5,23 +5,12 @@ import { motion, useReducedMotion } from "framer-motion";
 import {
   ArrowRight, BarChart3, Blocks, Check, ChevronDown, Code2, Gauge,
   Globe2, Layers3, Menu, MonitorSmartphone, Search, ShieldCheck,
-  Moon, Sparkles, Star, Sun, X, Zap, HeartPulse, Scale,
-  Utensils, Building2, Dumbbell, BriefcaseBusiness, Wrench, RefreshCw, MessageCircle,
+  Moon, Sparkles, Star, Sun, X, Zap, RefreshCw, MessageCircle,
 } from "lucide-react";
 
 const navItems = [
   ["Serviços", "#servicos"], ["Projetos", "#portfolio"],
   ["Processo", "#processo"], ["Sobre", "#diferenciais"],
-];
-
-const clients = [
-  { name: "Clínicas", icon: HeartPulse },
-  { name: "Advogados", icon: Scale },
-  { name: "Restaurantes", icon: Utensils },
-  { name: "Imobiliárias", icon: Building2 },
-  { name: "Academias", icon: Dumbbell },
-  { name: "Empresas", icon: BriefcaseBusiness },
-  { name: "Prestadores", icon: Wrench },
 ];
 
 const services = [
@@ -338,12 +327,11 @@ export default function Home() {
             <button className="themeToggle" onClick={toggleTheme} aria-label={theme === "dark" ? "Ativar modo claro" : "Ativar modo escuro"} title={theme === "dark" ? "Modo claro" : "Modo escuro"}>
               <span>{theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}</span>
             </button>
-            <span className="availability"><i />Disponível agora</span>
             <button className="navCta" type="button" onClick={() => setBriefingOpen(true)}>Iniciar projeto <ArrowRight size={15} /></button>
           </div>
           <button className="menuButton" onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? "Fechar menu" : "Abrir menu"} aria-expanded={menuOpen}>{menuOpen ? <X /> : <Menu />}</button>
         </div>
-        {menuOpen && <motion.nav className="mobileNav" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}>{navItems.map(([label, href]) => <a href={href} key={href} onClick={() => setMenuOpen(false)}>{label}</a>)}<button className="mobileThemeToggle" onClick={toggleTheme}>{theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}{theme === "dark" ? "Ativar modo claro" : "Ativar modo escuro"}</button><span className="availability"><i />Disponível agora</span><button className="mobileBriefingLink" type="button" onClick={() => { setMenuOpen(false); setBriefingOpen(true); }}>Iniciar projeto</button></motion.nav>}
+        {menuOpen && <motion.nav className="mobileNav" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}>{navItems.map(([label, href]) => <a href={href} key={href} onClick={() => setMenuOpen(false)}>{label}</a>)}<button className="mobileThemeToggle" onClick={toggleTheme}>{theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}{theme === "dark" ? "Ativar modo claro" : "Ativar modo escuro"}</button><button className="mobileBriefingLink" type="button" onClick={() => { setMenuOpen(false); setBriefingOpen(true); }}>Iniciar projeto</button></motion.nav>}
       </header>
 
       <section className="hero heroConversion" id="inicio">
@@ -351,7 +339,7 @@ export default function Home() {
         <div className="heroGlow glowOne" /><div className="heroGlow glowTwo" />
         <div className="container heroInner">
           <motion.div className="heroCopy" initial={{ opacity: 0, y: 34 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .9, ease: [0.22, 1, 0.36, 1] }}>
-            <span className="eyebrow"><i />Disponível agora para novos projetos</span>
+            <span className="eyebrow heroAvailability">Disponível agora para novos projetos</span>
             <h1>Sites que transformam <span>visitantes em clientes.</span></h1>
             <p>Sites e landing pages rápidos, claros e feitos para gerar contatos. Você fala direto com quem desenvolve.</p>
             <div className="heroActions">
@@ -363,11 +351,7 @@ export default function Home() {
           </motion.div>
           <QuickBriefingCard onOpenFull={() => setBriefingOpen(true)} />
         </div>
-        <a className="scrollCue" href="#clientes"><span />Explore</a>
-      </section>
-
-      <section className="clientSection" id="clientes">
-        <div className="container"><p className="clientLabel">Soluções digitais para diferentes mercados</p><div className="clientGrid">{clients.map(({ name, icon: Icon }) => <button className="clientCard" type="button" key={name} onClick={() => setBriefingOpen(true)} aria-label={`Solicitar projeto para ${name}`}><span className="clientIcon"><Icon size={19} strokeWidth={1.8} /></span><strong>{name}</strong><ArrowRight className="clientArrow" size={16} /></button>)}</div></div>
+        <a className="scrollCue" href="#servicos"><span />Explore</a>
       </section>
 
       <section className="section" id="servicos">
