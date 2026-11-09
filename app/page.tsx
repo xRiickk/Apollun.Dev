@@ -367,6 +367,13 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="careShowcaseSection" aria-label="Apollun Care">
+        <div className="container careShowcase">
+          <Reveal className="careShowcaseCopy"><span className="eyebrow"><i />Produto Apollun</span><h2>Uma rotina clínica mais <span>simples, clara e organizada.</span></h2><p>Conheça o Apollun Care: agenda inteligente, gestão de pacientes e lembretes em uma experiência criada para profissionais de psicologia.</p><div><a className="button primary" href="/care">Explorar demonstração <ArrowRight size={17} /></a><span>Dados fictícios · ambiente seguro</span></div></Reveal>
+          <Reveal className="carePreview" delay={.1}><div className="carePreviewTop"><span><i /><i /><i /></span><b>Apollun Care</b><em>Demo</em></div><div className="carePreviewBody"><aside><i /><i /><i /><i /></aside><div><span>Agenda da semana</span><strong>5 atendimentos</strong><div className="careMiniCalendar">{Array.from({ length: 20 }).map((_, index) => <i key={index} className={[2, 7, 13, 16].includes(index) ? "filled" : ""} />)}</div></div></div></Reveal>
+        </div>
+      </section>
+
       <section className="quickBriefingSection" aria-label="Orçamento rápido">
         <div className="container">
           <QuickBriefingCard onOpenFull={() => { trackConversion("briefing_opened", { source: "quick_card" }); setBriefingOpen(true); }} />
