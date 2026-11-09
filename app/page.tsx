@@ -4,15 +4,15 @@ import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import {
-  ArrowRight, BarChart3, Blocks, Check, ChevronDown, Code2, Gauge,
-  Globe2, Layers3, Menu, MonitorSmartphone, Search, ShieldCheck,
-  Moon, Sparkles, Star, Sun, X, Zap, RefreshCw, MessageCircle,
+  ArrowRight, Blocks, Check, ChevronDown, Gauge,
+  Globe2, Menu, Search,
+  Moon, Sparkles, Star, Sun, X, RefreshCw, MessageCircle,
 } from "lucide-react";
 
 const navItems = [
   ["Serviços", "#servicos"], ["Projetos", "#portfolio"],
   ["Processo", "#processo"], ["Planos", "#planos"],
-  ["Sobre", "#diferenciais"], ["FAQ", "#faq"],
+  ["FAQ", "#faq"],
 ];
 
 const services = [
@@ -22,11 +22,6 @@ const services = [
   { icon: Search, title: "SEO", text: "Estrutura técnica e conteúdo pensados para aumentar sua visibilidade orgânica." },
   { icon: Blocks, title: "Sistemas Web", text: "Plataformas sob medida para automatizar processos e dar escala à operação." },
   { icon: RefreshCw, title: "Reformulação de Sites", text: "Modernizamos sites antigos para melhorar design, performance, experiência e resultados." },
-];
-
-const differences = [
-  [Sparkles, "Design exclusivo"], [Code2, "Código limpo"], [Search, "SEO técnico"], [Zap, "Alta performance"],
-  [ShieldCheck, "Segurança"], [MonitorSmartphone, "Experiência responsiva"], [Layers3, "Suporte contínuo"], [BarChart3, "Escalabilidade"],
 ];
 
 const steps = [
@@ -169,7 +164,7 @@ function QuickBriefingCard({ onOpenFull }: { onOpenFull: () => void }) {
       <div className="quickBriefingHead"><div><span>Orçamento rápido</span><h2>Conte sobre o seu projeto</h2></div><small>Etapa {step + 1} de 3 · cerca de 1 minuto</small></div>
       <div className="quickProgress"><span style={{ width: `${((step + 1) / 3) * 100}%` }} /></div>
       <form onSubmit={(event) => { event.preventDefault(); if (step < 2) setStep(step + 1); else submit(); }}>
-        {step === 0 && <fieldset className="quickFields"><legend>Quem está pedindo?</legend><label>Seu nome<input autoFocus value={name} onChange={(event) => setName(event.target.value)} placeholder="Como podemos chamar você?" /></label><label>Empresa e segmento<input value={business} onChange={(event) => setBusiness(event.target.value)} placeholder="Ex.: Clínica Sorriso, odontologia" /></label></fieldset>}
+        {step === 0 && <fieldset className="quickFields"><legend>Quem está pedindo?</legend><label>Seu nome<input value={name} onChange={(event) => setName(event.target.value)} placeholder="Como podemos chamar você?" /></label><label>Empresa e segmento<input value={business} onChange={(event) => setBusiness(event.target.value)} placeholder="Ex.: Clínica Sorriso, odontologia" /></label></fieldset>}
         {step === 1 && <fieldset className="quickChoices"><legend>O que você quer criar?</legend><p>Você pode selecionar mais de uma opção.</p><div>{projectOptions.slice(0, 5).map((item) => <button type="button" key={item} className={projects.includes(item) ? "selected" : ""} onClick={() => toggleProject(item)} aria-pressed={projects.includes(item)}><span>{projects.includes(item) && <Check size={14} />}</span>{item}</button>)}</div></fieldset>}
         {step === 2 && <fieldset className="quickChoices"><legend>Qual é o principal objetivo?</legend><div>{projectGoals.slice(0, 4).map((item) => <button type="button" key={item} className={goal === item ? "selected" : ""} onClick={() => setGoal(item)} aria-pressed={goal === item}><span>{goal === item && <Check size={14} />}</span>{item}</button>)}</div></fieldset>}
         <div className="quickFooter"><button type="button" className="quickBack" onClick={() => step === 0 ? onOpenFull() : setStep(step - 1)}>{step === 0 ? "Prefiro detalhar" : "Voltar"}</button><button type="submit" className="quickNext" disabled={!canContinue}>{step === 2 ? "Enviar pelo WhatsApp" : "Continuar"}<ArrowRight size={16} /></button></div>
@@ -354,7 +349,6 @@ export default function Home() {
             <a className="heroProjectsLink" href="#portfolio">Ver projetos realizados <ArrowRight size={14} /></a>
             <div className="badges">{["Alta Performance", "SEO", "UX/UI", "Responsivo"].map((item) => <span key={item}><Check size={13} />{item}</span>)}</div>
           </motion.div>
-          <QuickBriefingCard onOpenFull={() => { trackConversion("briefing_opened", { source: "quick_card" }); setBriefingOpen(true); }} />
         </div>
         <a className="scrollCue" href="#servicos"><span />Explore</a>
       </section>
@@ -366,13 +360,6 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section differenceSection" id="diferenciais">
-        <div className="container differenceLayout">
-          <SectionTitle eyebrow="O padrão Apollun" title={<>Não entregamos apenas um site. Entregamos uma <span>vantagem digital.</span></>} text="Cada camada do projeto é pensada para transmitir autoridade, acelerar a experiência e sustentar o crescimento." />
-          <div className="differenceGrid">{differences.map(([Icon, label], index) => <Reveal className="differenceCard" delay={(index % 2) * .07} key={label as string}><Icon size={21} /><span>{label as string}</span><i>{String(index + 1).padStart(2, "0")}</i></Reveal>)}</div>
-        </div>
-      </section>
-
       <section className="section processSection" id="processo">
         <div className="container processLayout">
           <div className="processIntro"><SectionTitle eyebrow="Nosso processo" title={<>Método para transformar complexidade em <span>clareza.</span></>} text="Um fluxo transparente, colaborativo e preciso — da primeira conversa ao crescimento contínuo." /></div>
@@ -380,14 +367,9 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section portfolioSection" id="portfolio">
+      <section className="quickBriefingSection" aria-label="Orçamento rápido">
         <div className="container">
-          <SectionTitle eyebrow="Projetos em destaque" title={<>Experiências pensadas para <span>ser lembradas.</span></>} text="Direções de produto que mostram como estratégia, identidade e tecnologia podem trabalhar como uma só coisa." />
-          <div className="projectGrid editorialProjects">
-            <Reveal className="projectCard projectWide"><div className="projectVisual realProjectVisual nieroProject"><Image src="/showcase/niero-desktop.png" alt="Página inicial do site Srta. Niero" fill sizes="(max-width: 900px) 100vw, 70vw" unoptimized /></div><div className="projectInfo"><div><span>WEBSITE · BRANDING</span><h3>Srta. Niero</h3></div><button type="button" onClick={() => { trackConversion("project_cta_clicked", { project: "Srta. Niero" }); setBriefingOpen(true); }} aria-label="Solicitar um site inspirado no projeto Srta. Niero">Quero um site assim <ArrowRight size={15} /></button></div></Reveal>
-            <Reveal className="projectCard"><div className="projectVisual realProjectVisual apollunProject"><Image src="/showcase/apollun-desktop.png" alt="Página inicial do site Apollun.Dev" fill sizes="(max-width: 900px) 100vw, 70vw" unoptimized /></div><div className="projectInfo"><div><span>WEBSITE · UX/UI · DESENVOLVIMENTO</span><h3>Apollun.Dev</h3></div><button type="button" onClick={() => { trackConversion("project_cta_clicked", { project: "Apollun.Dev" }); setBriefingOpen(true); }} aria-label="Solicitar um site inspirado no projeto Apollun.Dev">Quero um site assim <ArrowRight size={15} /></button></div></Reveal>
-            <Reveal className="projectCard"><div className="projectVisual realProjectVisual paolaProject"><Image src="/showcase/paola-desktop.png" alt="Página inicial do site da psicóloga Paola Milani" fill sizes="(max-width: 900px) 100vw, 70vw" unoptimized /></div><div className="projectInfo"><div><span>WEBSITE · PSICOLOGIA · UX/UI</span><h3>Paola Milani</h3></div><button type="button" onClick={() => { trackConversion("project_cta_clicked", { project: "Paola Milani" }); setBriefingOpen(true); }} aria-label="Solicitar um site inspirado no projeto Paola Milani">Quero um site assim <ArrowRight size={15} /></button></div></Reveal>
-          </div>
+          <QuickBriefingCard onOpenFull={() => { trackConversion("briefing_opened", { source: "quick_card" }); setBriefingOpen(true); }} />
         </div>
       </section>
 
@@ -405,6 +387,17 @@ export default function Home() {
             <button className={`button ${plan.featured ? "primary" : "secondary"}`} type="button" onClick={() => { trackConversion("plan_cta_clicked", { plan: plan.name }); setBriefingOpen(true); }}>{plan.cta} <ArrowRight size={16} /></button>
           </Reveal>)}</div>
           <div className="pricingHelp"><div><strong>Ainda não sabe qual formato escolher?</strong><span>Conte sua ideia e indicamos o caminho mais adequado, sem compromisso.</span></div><button type="button" onClick={() => setBriefingOpen(true)}>Receber recomendação <ArrowRight size={16} /></button></div>
+        </div>
+      </section>
+
+      <section className="section portfolioSection" id="portfolio">
+        <div className="container">
+          <SectionTitle eyebrow="Projetos em destaque" title={<>Experiências pensadas para <span>ser lembradas.</span></>} text="Direções de produto que mostram como estratégia, identidade e tecnologia podem trabalhar como uma só coisa." />
+          <div className="projectGrid editorialProjects">
+            <Reveal className="projectCard projectWide"><div className="projectVisual realProjectVisual nieroProject"><Image src="/showcase/niero-desktop.png" alt="Página inicial do site Srta. Niero" fill sizes="(max-width: 900px) 100vw, 70vw" unoptimized /></div><div className="projectInfo"><div><span>WEBSITE · BRANDING</span><h3>Srta. Niero</h3></div><button type="button" onClick={() => { trackConversion("project_cta_clicked", { project: "Srta. Niero" }); setBriefingOpen(true); }} aria-label="Solicitar um site inspirado no projeto Srta. Niero">Quero um site assim <ArrowRight size={15} /></button></div></Reveal>
+            <Reveal className="projectCard"><div className="projectVisual realProjectVisual apollunProject"><Image src="/showcase/apollun-desktop.png" alt="Página inicial do site Apollun.Dev" fill sizes="(max-width: 900px) 100vw, 70vw" unoptimized /></div><div className="projectInfo"><div><span>WEBSITE · UX/UI · DESENVOLVIMENTO</span><h3>Apollun.Dev</h3></div><button type="button" onClick={() => { trackConversion("project_cta_clicked", { project: "Apollun.Dev" }); setBriefingOpen(true); }} aria-label="Solicitar um site inspirado no projeto Apollun.Dev">Quero um site assim <ArrowRight size={15} /></button></div></Reveal>
+            <Reveal className="projectCard"><div className="projectVisual realProjectVisual paolaProject"><Image src="/showcase/paola-desktop.png" alt="Página inicial do site da psicóloga Paola Milani" fill sizes="(max-width: 900px) 100vw, 70vw" unoptimized /></div><div className="projectInfo"><div><span>WEBSITE · PSICOLOGIA · UX/UI</span><h3>Paola Milani</h3></div><button type="button" onClick={() => { trackConversion("project_cta_clicked", { project: "Paola Milani" }); setBriefingOpen(true); }} aria-label="Solicitar um site inspirado no projeto Paola Milani">Quero um site assim <ArrowRight size={15} /></button></div></Reveal>
+          </div>
         </div>
       </section>
 
