@@ -196,3 +196,32 @@ html[data-theme="light"] .heroCopy h1 span{background:linear-gradient(180deg,#71
 .heroConversion .heroGlow{display:none}.heroConversion .heroGrid{background-image:linear-gradient(rgba(245,241,235,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(245,241,235,.04) 1px,transparent 1px);background-size:52px 52px;opacity:1;-webkit-mask-image:none;mask-image:none}.heroConversion .heroGrid:after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 58% 52% at 50% 44%,#1c3044 0 26%,rgba(30,51,70,.96) 42%,rgba(31,53,73,.55) 62%,transparent 78%)}
 html[data-theme="light"] .heroConversion{background:radial-gradient(circle at 92% 8%,rgba(207,180,150,.56) 0%,transparent 34%),radial-gradient(circle at 7% 92%,rgba(52,72,95,.18) 0%,transparent 31%),linear-gradient(135deg,#fff 0%,#f5f1eb 100%)}html[data-theme="light"] .heroConversion .heroGrid{background-image:linear-gradient(rgba(32,54,78,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(32,54,78,.045) 1px,transparent 1px)}html[data-theme="light"] .heroConversion .heroGrid:after{background:radial-gradient(ellipse 58% 52% at 50% 44%,#fff 0 26%,rgba(253,251,247,.98) 42%,rgba(248,244,238,.64) 62%,transparent 78%)}
 @media(max-width:700px){.heroConversion .heroGrid{background-size:42px 42px}.heroConversion .heroGrid:after{background:radial-gradient(ellipse 82% 48% at 50% 41%,#1c3044 0 24%,rgba(30,51,70,.96) 44%,rgba(31,53,73,.52) 66%,transparent 84%)}html[data-theme="light"] .heroConversion .heroGrid:after{background:radial-gradient(ellipse 82% 48% at 50% 41%,#fff 0 24%,rgba(253,251,247,.98) 44%,rgba(248,244,238,.62) 66%,transparent 84%)}}
+
+/* Accessible title accents: solid colors avoid low-contrast splits inside words. */
+.heroCopy h1 span,
+.sectionTitle h2 span,
+.testimonialLayout h2 span,
+.careShowcaseCopy h2 span{
+  background:none;
+  color:#e4cbb1;
+  -webkit-background-clip:border-box;
+  background-clip:border-box;
+  -webkit-text-fill-color:currentColor;
+}
+
+html[data-theme="light"] .heroCopy h1 span,
+html[data-theme="light"] .sectionTitle h2 span,
+html[data-theme="light"] .testimonialLayout h2 span{
+  background:none;
+  color:#526a82;
+  -webkit-background-clip:border-box;
+  background-clip:border-box;
+  -webkit-text-fill-color:currentColor;
+}
+
+html[data-theme="light"] #servicos .sectionTitle h2 span,
+html[data-theme="light"] .careShowcaseCopy h2 span,
+#servicos .sectionTitle h2 span,
+.careShowcaseCopy h2 span{
+  color:#e4cbb1;
+}
