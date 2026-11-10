@@ -186,3 +186,7 @@ html[data-theme="light"] .heroConversion{background:radial-gradient(circle at 84
 
 @media(max-width:900px){.serviceList .serviceCard{grid-template-columns:44px 32px minmax(160px,200px) 1fr}.serviceExplore{grid-column:3/-1;justify-self:start}.serviceDetails{grid-template-columns:1fr 1fr}.serviceDetails>div:last-of-type{grid-column:1/-1}}
 @media(max-width:700px){.serviceList .serviceCard{grid-template-columns:42px 1fr}.serviceExplore{grid-column:1/-1}.serviceDetails{grid-template-columns:1fr;padding-top:18px}.serviceDetails>div:last-of-type{grid-column:auto}.serviceDetails>button{width:100%;justify-content:space-between}}
+
+/* Hero highlight: vertical, cohesive gradient */
+.heroCopy h1 span{background:linear-gradient(180deg,#f5f1eb 0%,#cfb496 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+html[data-theme="light"] .heroCopy h1 span{background:linear-gradient(180deg,#71869a 0%,#34485f 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
