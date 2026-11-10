@@ -16,12 +16,12 @@ const navItems = [
 ];
 
 const services = [
-  { icon: Globe2, title: "Desenvolvimento Web", text: "Sites rápidos, responsivos e preparados para crescer com seu negócio." },
-  { icon: Gauge, title: "Landing Pages", text: "Páginas estratégicas desenhadas para transformar tráfego em oportunidades." },
-  { icon: Sparkles, title: "UX/UI Design", text: "Interfaces intuitivas, elegantes e alinhadas à identidade da sua marca." },
-  { icon: Search, title: "SEO", text: "Estrutura técnica e conteúdo pensados para aumentar sua visibilidade orgânica." },
-  { icon: Blocks, title: "Sistemas Web", text: "Plataformas sob medida para automatizar processos e dar escala à operação." },
-  { icon: RefreshCw, title: "Reformulação de Sites", text: "Modernizamos sites antigos para melhorar design, performance, experiência e resultados." },
+  { icon: Globe2, title: "Desenvolvimento Web", text: "Sites rápidos, responsivos e preparados para crescer com seu negócio.", details: "Criação completa do site, da estrutura ao código, com uma experiência adaptada à sua marca e aos objetivos do negócio.", includes: ["Arquitetura e páginas personalizadas", "Desenvolvimento responsivo", "Integrações de contato e análise"], ideal: "Empresas que precisam de uma presença digital profissional, segura e preparada para evoluir." },
+  { icon: Gauge, title: "Landing Pages", text: "Páginas estratégicas desenhadas para transformar tráfego em oportunidades.", details: "Uma página única e objetiva, construída para apresentar uma oferta e conduzir o visitante até uma ação, como pedir orçamento ou falar no WhatsApp.", includes: ["Estrutura focada em conversão", "Texto e hierarquia estratégica", "Formulário ou WhatsApp integrado"], ideal: "Campanhas, lançamentos, serviços específicos e profissionais que desejam gerar contatos." },
+  { icon: Sparkles, title: "UX/UI Design", text: "Interfaces intuitivas, elegantes e alinhadas à identidade da sua marca.", details: "Planejamento da experiência e do visual das telas para que o usuário encontre o que precisa com clareza, confiança e facilidade.", includes: ["Jornada e organização do conteúdo", "Protótipo das principais telas", "Sistema visual consistente"], ideal: "Marcas que querem melhorar a percepção de valor e tornar a navegação mais simples." },
+  { icon: Search, title: "SEO", text: "Estrutura técnica e conteúdo pensados para aumentar sua visibilidade orgânica.", details: "Otimização da base do site para facilitar a leitura pelos buscadores e oferecer páginas mais rápidas, organizadas e relevantes.", includes: ["SEO técnico e semântico", "Títulos e descrições das páginas", "Performance e indexação"], ideal: "Negócios que desejam ser encontrados no Google e construir visibilidade no longo prazo." },
+  { icon: Blocks, title: "Sistemas Web", text: "Plataformas sob medida para automatizar processos e dar escala à operação.", details: "Ferramentas digitais personalizadas para centralizar informações, reduzir tarefas manuais e apoiar a rotina da empresa.", includes: ["Painéis e áreas administrativas", "Cadastros, agenda e automações", "Fluxos adaptados à operação"], ideal: "Empresas e profissionais que precisam organizar ou automatizar um processo específico." },
+  { icon: RefreshCw, title: "Reformulação de Sites", text: "Modernizamos sites antigos para melhorar design, performance, experiência e resultados.", details: "Revisão estratégica e reconstrução do site atual, preservando o que funciona e corrigindo os pontos que prejudicam a marca e a conversão.", includes: ["Diagnóstico do site atual", "Novo design e experiência", "Modernização técnica e de conteúdo"], ideal: "Marcas com um site desatualizado, lento ou que já não representa a qualidade do negócio." },
 ];
 
 const steps = [
@@ -291,6 +291,7 @@ export default function Home() {
   const [testimonial, setTestimonial] = useState(0);
   const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [briefingOpen, setBriefingOpen] = useState(false);
+  const [expandedService, setExpandedService] = useState<string | null>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -356,7 +357,7 @@ export default function Home() {
       <section className="section" id="servicos">
         <div className="container">
           <SectionTitle eyebrow="O que fazemos" title={<>Tudo o que sua presença digital precisa para <span>crescer.</span></>} text="Da estratégia ao código, entregamos experiências completas e construídas para gerar valor real." />
-          <div className="serviceGrid serviceList">{services.map((service, index) => { const Icon = service.icon; return <Reveal className="serviceCard" delay={(index % 3) * .08} key={service.title}><div className="serviceIcon"><Icon size={22} /></div><span className="cardNumber">0{index + 1}</span><h3>{service.title}</h3><p>{service.text}</p><a href="#contato" aria-label={`Saiba mais sobre ${service.title}`}>Explorar <ArrowRight size={14} /></a></Reveal>; })}</div>
+          <div className="serviceGrid serviceList">{services.map((service, index) => { const Icon = service.icon; const isExpanded = expandedService === service.title; const detailsId = `service-details-${index}`; return <Reveal className={`serviceCard ${isExpanded ? "expanded" : ""}`} delay={(index % 3) * .08} key={service.title}><div className="serviceIcon"><Icon size={22} /></div><span className="cardNumber">0{index + 1}</span><h3>{service.title}</h3><p>{service.text}</p><button type="button" className="serviceExplore" onClick={() => setExpandedService(isExpanded ? null : service.title)} aria-expanded={isExpanded} aria-controls={detailsId}>{isExpanded ? "Fechar" : "Explorar"}<ChevronDown size={15} /></button>{isExpanded && <motion.div id={detailsId} className="serviceDetails" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .25 }}><div><span>O que é</span><p>{service.details}</p></div><div><span>O que está incluído</span><ul>{service.includes.map((item) => <li key={item}><Check size={13} />{item}</li>)}</ul></div><div><span>Indicado para</span><p>{service.ideal}</p></div><button type="button" onClick={() => { trackConversion("briefing_opened", { source: "service_details", service: service.title }); setBriefingOpen(true); }}>Quero conversar sobre este serviço <ArrowRight size={15} /></button></motion.div>}</Reveal>; })}</div>
         </div>
       </section>
 
