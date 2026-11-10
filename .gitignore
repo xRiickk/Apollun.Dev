@@ -40,3 +40,5 @@ next-env.d.ts
 /.wrangler/
 /outputs/
 /work/
+/.codex-attachments/
+/.codex-live-review*.png
