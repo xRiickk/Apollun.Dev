@@ -99,3 +99,35 @@ html[data-theme="light"] .planIdeal{background:#f5f1eb;border-color:rgba(32,54,7
 html[data-theme="light"] .pricingHelp{background:rgba(255,255,255,.72)}
 html[data-theme="light"] .careShowcaseSection{background:radial-gradient(circle at 80% 20%,rgba(124,58,237,.12),transparent 34%),#20364e;color:#fff}
 html[data-theme="light"] .careShowcaseSection .eyebrow{color:#dcc8b2}html[data-theme="light"] .careShowcaseCopy>p,html[data-theme="light"] .careShowcaseCopy>div>span{color:#c8d0d8}
+
+/* Stronger Apollun palette pass — visible section hierarchy */
+.heroCopy h1 span,.sectionTitle h2 span,.testimonialLayout h2 span{background:linear-gradient(105deg,#cfb496 5%,#6ea4ff 55%,#9a78ff 92%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.heroConversion{background:radial-gradient(circle at 78% 16%,rgba(207,180,150,.15),transparent 34%),radial-gradient(circle at 12% 82%,rgba(37,99,235,.14),transparent 34%),#182a3d}
+#servicos{position:relative;background:linear-gradient(145deg,#20364e 0%,#182a3d 100%);color:#fff;border-block:1px solid rgba(245,241,235,.09);overflow:hidden}
+#servicos:before{content:"";position:absolute;width:520px;height:520px;border-radius:50%;right:-230px;top:-250px;background:radial-gradient(circle,rgba(207,180,150,.13),transparent 68%);pointer-events:none}
+#servicos .sectionTitle h2{color:#fff}#servicos .sectionTitle p{color:#c8d0d8}#servicos .eyebrow{color:#dcc8b2}
+#servicos .serviceCard{background:linear-gradient(145deg,rgba(52,72,95,.94),rgba(35,55,76,.94));border-color:rgba(245,241,235,.12);box-shadow:0 22px 55px rgba(5,16,29,.22)}
+#servicos .serviceCard h3{color:#fff}#servicos .serviceCard p{color:#c8d0d8}#servicos .serviceCard a{color:#e3c9ae}#servicos .cardNumber{color:#8fa0b0}
+.processSection{background:linear-gradient(180deg,var(--bg),var(--bg2))}
+.pricingSection{background:linear-gradient(180deg,var(--bg2),var(--bg))}
+.portfolioSection{background:var(--bg)}.faqSection{background:var(--bg2)}
+.quickBriefingSection{background:linear-gradient(180deg,var(--bg),var(--bg2))}
+.quickBriefingCard{border-color:rgba(207,180,150,.2)}.quickBriefingHead span{color:#d2b08f}.quickProgress span{background:linear-gradient(90deg,#cfb496,#2563eb,#7c3aed)}
+.finalCta{background:radial-gradient(circle at 18% 85%,rgba(207,180,150,.17),transparent 32%),radial-gradient(circle at 83% 17%,rgba(124,58,237,.18),transparent 34%),linear-gradient(135deg,#182a3d,#20364e 48%,#34485f)}
+.finalInner h2 span{color:#e0c4a7;background:none;-webkit-text-fill-color:currentColor}
+
+html[data-theme="light"] .heroConversion{background:radial-gradient(circle at 84% 12%,rgba(207,180,150,.34),transparent 35%),radial-gradient(circle at 8% 90%,rgba(37,99,235,.10),transparent 32%),linear-gradient(135deg,#fff 0%,#f5f1eb 100%)}
+html[data-theme="light"] .heroGrid{background-image:linear-gradient(rgba(32,54,78,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(32,54,78,.055) 1px,transparent 1px)}
+html[data-theme="light"] .heroCopy h1 span{background:linear-gradient(105deg,#20364e 4%,#5f7690 45%,#cfb496 94%);-webkit-background-clip:text;background-clip:text;color:transparent}
+html[data-theme="light"] #servicos{background:linear-gradient(145deg,#20364e 0%,#182a3d 100%)}
+html[data-theme="light"] #servicos .serviceCard{background:linear-gradient(145deg,#34485f,#263c52);border-color:rgba(245,241,235,.13)}
+html[data-theme="light"] #servicos .serviceIcon{color:#efd8c0;background:rgba(207,180,150,.12);border-color:rgba(207,180,150,.24)}
+html[data-theme="light"] .processSection{background:linear-gradient(180deg,#f5f1eb,#fff)}
+html[data-theme="light"] .quickBriefingSection{background:linear-gradient(180deg,#fff,#f5f1eb)}
+html[data-theme="light"] .quickBriefingCard{background:#fff;border-color:rgba(32,54,78,.12);box-shadow:0 35px 90px rgba(32,54,78,.11)}
+html[data-theme="light"] .quickBriefingHead span{color:#94765c}
+html[data-theme="light"] .pricingSection{background:linear-gradient(180deg,#f5f1eb,#eee7de)}
+html[data-theme="light"] .portfolioSection{background:#fff}
+html[data-theme="light"] .faqSection{background:#f5f1eb}
+html[data-theme="light"] .footer{background:#182a3d;color:#fff}
+html[data-theme="light"] .footer p,html[data-theme="light"] .footerColumn a,html[data-theme="light"] .footerColumn span,html[data-theme="light"] .footerBottom{color:#bfc9d2}
