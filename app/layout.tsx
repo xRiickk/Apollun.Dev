@@ -12,9 +12,9 @@ export const metadata: Metadata = {
     alternates: { canonical: "/" },
     robots: { index: true, follow: true },
     icons: {
-      icon: [{ url: "/apollun-icon.png", type: "image/png" }],
-      shortcut: "/apollun-icon.png",
-      apple: "/apollun-icon.png",
+      icon: [{ url: "/brand/apollun-submarca.png", type: "image/png" }],
+      shortcut: "/brand/apollun-submarca.png",
+      apple: "/brand/apollun-submarca.png",
     },
     openGraph: {
       title: "Apollun.Dev — Transformando ideias em experiências digitais",

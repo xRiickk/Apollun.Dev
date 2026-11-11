@@ -9,9 +9,8 @@ export function LegalPage({ eyebrow, title, intro, sections }: { eyebrow: string
     <main className="legalPage">
       <header className="legalHeader">
         <div className="container legalNav">
-          <Link className="brand" href="/" aria-label="Voltar à página inicial da Apollun.Dev">
-            <Image className="brandIcon" src="/apollun-icon.png" alt="" width={40} height={40} priority unoptimized />
-            APOLLUN<span>.DEV</span>
+          <Link className="brand brandHorizontal" href="/" aria-label="Voltar à página inicial da Apollun">
+            <Image src="/brand/apollun-horizontal.png" alt="Apollun" width={240} height={80} priority unoptimized />
           </Link>
           <Link className="legalBack" href="/">Voltar ao site <span aria-hidden="true">→</span></Link>
         </div>

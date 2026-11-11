@@ -71,10 +71,10 @@ export default function CareDemo() {
   return <main className={styles.shell}>
     <div className={styles.demoBar}><Sparkles size={13} /> Demonstração interativa · dados fictícios</div>
     <aside className={`${styles.sidebar} ${menuOpen ? styles.sidebarOpen : ""}`}>
-      <div className={styles.brand}><Image src="/apollun-icon.png" width={42} height={42} alt="" unoptimized /><div><strong>Apollun</strong><span>Care</span></div><button className={styles.closeMenu} onClick={() => setMenuOpen(false)} aria-label="Fechar menu"><X /></button></div>
+      <div className={styles.brand}><Image src="/brand/apollun-submarca.png" width={46} height={46} alt="" unoptimized /><div><strong>Apollun</strong><span>Care</span></div><button className={styles.closeMenu} onClick={() => setMenuOpen(false)} aria-label="Fechar menu"><X /></button></div>
       <nav aria-label="Navegação da demonstração">{nav.map((item) => { const Icon = item.icon; return <button key={item.id} className={view === item.id ? styles.active : ""} onClick={() => selectView(item.id)}><Icon size={19} /><span>{item.label}</span>{item.badge && <em>{item.badge}</em>}</button>; })}</nav>
       <div className={styles.protected}><ShieldCheck size={19} /><div><strong>Ambiente demonstrativo</strong><span>Nenhum dado clínico real</span></div></div>
-      <div className={styles.profile}><Image src="/apollun-icon.png" width={38} height={38} alt="" unoptimized /><div><strong>Henrique</strong><span>Apollun.Dev</span></div></div>
+      <div className={styles.profile}><Image src="/brand/apollun-submarca.png" width={38} height={38} alt="" unoptimized /><div><strong>Henrique</strong><span>Apollun.Dev</span></div></div>
     </aside>
     <section className={styles.workspace}>
       <header className={styles.topbar}><button className={styles.mobileMenu} onClick={() => setMenuOpen(true)} aria-label="Abrir menu"><Menu /></button><div><span>{formatDate(now, { weekday: "long", day: "2-digit", month: "long" })}</span><h1>{title}</h1></div><div className={styles.actions}><button onClick={() => setSearchOpen(true)}><Search size={17} /><span>Pesquisar</span></button><button className={styles.bell} aria-label="Notificações"><Bell size={18} /><i /></button><button className={styles.primary} onClick={() => { setView("agenda"); notify("Escolha um horário livre na agenda."); }}><Plus size={18} /><span>Novo agendamento</span></button></div></header>
