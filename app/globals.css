@@ -153,6 +153,7 @@ html[data-theme="light"] .heroConversion{background:radial-gradient(circle at 84
 .finalCta{background:radial-gradient(circle at 18% 85%,rgba(207,180,150,.17),transparent 32%),radial-gradient(circle at 83% 17%,rgba(82,103,124,.18),transparent 34%),linear-gradient(135deg,#182a3d,#20364e 48%,#34485f)}
 .avatar{background:linear-gradient(135deg,#20364e,#cfb496);color:#fff}
 .brandHorizontal,html[data-theme="light"] .brandHorizontal{background:rgba(245,241,235,.97);border-color:rgba(207,180,150,.34)}
+html[data-theme="light"] .navbar.scrolled .brandHorizontal{padding-block:3px;background:transparent;border-color:transparent;box-shadow:none}
 .themeToggle:hover,html[data-theme="light"] .themeToggle:hover{border-color:rgba(207,180,150,.55);background:rgba(207,180,150,.12);color:var(--text)}
 .showcaseControls button.active{background:rgba(207,180,150,.16);color:var(--text);border-color:rgba(207,180,150,.42)}.showcaseControls button.active span{background:#cfb496;box-shadow:0 0 10px rgba(207,180,150,.5)}
 .mockScreen{--screen-accent:#34485f;--screen-accent2:#cfb496}.showcase-commerce{--screen-accent:#cfb496;--screen-accent2:#34485f}
