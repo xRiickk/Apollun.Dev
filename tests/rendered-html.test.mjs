@@ -1,34 +1,78 @@
 import assert from "node:assert/strict";
+import { spawn } from "node:child_process";
 import { readFile } from "node:fs/promises";
+import { fileURLToPath } from "node:url";
+import { createServer } from "node:net";
 import test from "node:test";
 
-async function render(pathname = "/") {
-  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
-  workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
-  const { default: worker } = await import(workerUrl.href);
-
-  return worker.fetch(
-    new Request(`http://localhost${pathname}`, {
-      headers: { accept: "text/html" },
-    }),
-    {
-      ASSETS: {
-        fetch: async () => new Response("Not found", { status: 404 }),
-      },
-    },
-    {
-      waitUntil() {},
-      passThroughOnException() {},
-    },
+async function reservePort() {
+  const server = createServer();
+  await new Promise((resolve, reject) => {
+    server.once("error", reject);
+    server.listen(0, "127.0.0.1", resolve);
+  });
+  const address = server.address();
+  const port = typeof address === "object" && address ? address.port : 0;
+  await new Promise((resolve, reject) =>
+    server.close((error) => (error ? reject(error) : resolve())),
   );
+  return port;
+}
+
+async function render(pathname = "/") {
+  const port = await reservePort();
+  const wrangler = fileURLToPath(
+    new URL("../node_modules/wrangler/bin/wrangler.js", import.meta.url),
+  );
+  const config = fileURLToPath(
+    new URL("../dist/server/wrangler.json", import.meta.url),
+  );
+  const child = spawn(
+    process.execPath,
+    [wrangler, "dev", "--config", config, "--port", String(port)],
+    { stdio: ["ignore", "pipe", "pipe"], windowsHide: true },
+  );
+  let diagnostics = "";
+  child.stdout.on("data", (chunk) => (diagnostics += chunk.toString()));
+  child.stderr.on("data", (chunk) => (diagnostics += chunk.toString()));
+
+  try {
+    const deadline = Date.now() + 20_000;
+    let response;
+    while (Date.now() < deadline) {
+      if (child.exitCode !== null) {
+        throw new Error(`Wrangler exited before startup.\n${diagnostics}`);
+      }
+      try {
+        response = await fetch(`http://127.0.0.1:${port}${pathname}`, {
+          headers: { accept: "text/html" },
+        });
+        break;
+      } catch {
+        await new Promise((resolve) => setTimeout(resolve, 150));
+      }
+    }
+    if (!response) {
+      throw new Error(`Wrangler did not become ready.\n${diagnostics}`);
+    }
+    return {
+      status: response.status,
+      contentType: response.headers.get("content-type") ?? "",
+      html: await response.text(),
+    };
+  } finally {
+    child.kill();
+    await Promise.race([
+      new Promise((resolve) => child.once("exit", resolve)),
+      new Promise((resolve) => setTimeout(resolve, 2_000)),
+    ]);
+  }
 }
 
 test("renders the Apollun home page with its SEO and primary sections", async () => {
-  const response = await render();
-  assert.equal(response.status, 200);
-  assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
-
-  const html = await response.text();
+  const { status, contentType, html } = await render();
+  assert.equal(status, 200);
+  assert.match(contentType, /^text\/html\b/i);
   assert.match(html, /<html[^>]*lang=["']pt-BR["']/i);
   assert.match(
     html,
@@ -42,6 +86,27 @@ test("renders the Apollun home page with its SEO and primary sections", async ()
   assert.match(html, /id=["']faq["']/i);
   assert.match(html, /Sites que transformam/);
   assert.match(html, /Apollun Care/);
+});
+
+test("renders the Apollun Care demonstration", async () => {
+  const { status, contentType, html } = await render("/care");
+  assert.equal(status, 200);
+  assert.match(contentType, /^text\/html\b/i);
+  assert.match(html, /<title>Apollun Care — Agenda inteligente para psicólogos<\/title>/i);
+  assert.match(html, /Demonstração interativa/);
+  assert.match(html, /Visão geral/);
+  assert.match(html, /Financeiro/);
+  assert.match(html, /Nenhum dado clínico real/);
+});
+
+test("renders both legal pages", async () => {
+  for (const pathname of ["/politica-de-privacidade", "/termos-de-uso"]) {
+    const { status, contentType, html } = await render(pathname);
+    assert.equal(status, 200, pathname);
+    assert.match(contentType, /^text\/html\b/i, pathname);
+    assert.match(html, /Henrique de Freitas Pinto/, pathname);
+    assert.match(html, /São Bernardo do Campo/, pathname);
+  }
 });
 
 test("keeps legacy blue and purple UI accents out of the main stylesheet", async () => {

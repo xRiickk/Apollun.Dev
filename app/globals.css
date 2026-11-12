@@ -226,3 +226,17 @@ html[data-theme="light"] .careShowcaseCopy h2 span,
 .careShowcaseCopy h2 span{
   color:#e4cbb1;
 }
+
+.quickProgress span[data-total="3"][data-step="1"],
+.briefingProgress span[data-total="3"][data-step="1"]{width:33.333%}
+.quickProgress span[data-total="3"][data-step="2"],
+.briefingProgress span[data-total="3"][data-step="2"]{width:66.667%}
+.quickProgress span[data-total="3"][data-step="3"],
+.briefingProgress span[data-total="3"][data-step="3"]{width:100%}
+.briefingProgress span[data-total="7"][data-step="1"]{width:14.286%}
+.briefingProgress span[data-total="7"][data-step="2"]{width:28.571%}
+.briefingProgress span[data-total="7"][data-step="3"]{width:42.857%}
+.briefingProgress span[data-total="7"][data-step="4"]{width:57.143%}
+.briefingProgress span[data-total="7"][data-step="5"]{width:71.429%}
+.briefingProgress span[data-total="7"][data-step="6"]{width:85.714%}
+.briefingProgress span[data-total="7"][data-step="7"]{width:100%}

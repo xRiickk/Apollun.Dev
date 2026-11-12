@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import {
   ArrowRight, Blocks, Check, ChevronDown, Gauge,
   Globe2, Menu, Search,
@@ -162,7 +163,7 @@ function QuickBriefingCard({ onOpenFull }: { onOpenFull: () => void }) {
   return (
     <motion.div className="quickBriefingCard" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .8, delay: .18, ease: [0.22, 1, 0.36, 1] }}>
       <div className="quickBriefingHead"><div><span>Orçamento rápido</span><h2>Conte sobre o seu projeto</h2></div><small>Etapa {step + 1} de 3 · cerca de 1 minuto</small></div>
-      <div className="quickProgress"><span style={{ width: `${((step + 1) / 3) * 100}%` }} /></div>
+      <div className="quickProgress"><span data-step={step + 1} data-total="3" /></div>
       <form onSubmit={(event) => { event.preventDefault(); if (step < 2) setStep(step + 1); else submit(); }}>
         {step === 0 && <fieldset className="quickFields"><legend>Quem está pedindo?</legend><label>Seu nome<input value={name} onChange={(event) => setName(event.target.value)} placeholder="Como podemos chamar você?" /></label><label>Empresa e segmento<input value={business} onChange={(event) => setBusiness(event.target.value)} placeholder="Ex.: Clínica Sorriso, odontologia" /></label></fieldset>}
         {step === 1 && <fieldset className="quickChoices"><legend>O que você quer criar?</legend><p>Você pode selecionar mais de uma opção.</p><div>{projectOptions.slice(0, 5).map((item) => <button type="button" key={item} className={projects.includes(item) ? "selected" : ""} onClick={() => toggleProject(item)} aria-pressed={projects.includes(item)}><span>{projects.includes(item) && <Check size={14} />}</span>{item}</button>)}</div></fieldset>}
@@ -260,7 +261,7 @@ function BriefingModal({ onClose }: { onClose: () => void }) {
           <div><span>{mode === "quick" ? "Orçamento rápido" : "Briefing Apollun.Dev"}</span><strong id="briefing-title">{mode === "quick" ? "Conte o essencial em cerca de 1 minuto." : "Conte-nos sobre seu projeto."}</strong></div>
           <button type="button" onClick={onClose} aria-label="Fechar briefing"><X size={19} /></button>
         </div>
-        <div className="briefingProgress"><span style={{ width: `${((step + 1) / (lastStep + 1)) * 100}%` }} /></div>
+        <div className="briefingProgress"><span data-step={step + 1} data-total={lastStep + 1} /></div>
         <form onSubmit={(event) => { event.preventDefault(); if (step < lastStep) setStep(step + 1); else if (mode === "quick") sendQuickBriefing(); else sendBriefing(); }}>
           <div className="briefingStepMeta"><span>Etapa {step + 1} de {lastStep + 1}</span><small>{mode === "quick" ? "Cerca de 1 minuto" : "Cerca de 4 minutos"}</small><button type="button" className="briefingModeSwitch" onClick={() => { setMode(mode === "quick" ? "full" : "quick"); setStep(0); }}>{mode === "quick" ? "Prefiro o briefing completo" : "Usar versão rápida"}</button></div>
 
@@ -286,6 +287,7 @@ function BriefingModal({ onClose }: { onClose: () => void }) {
 }
 
 export default function Home() {
+  const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [testimonial, setTestimonial] = useState(0);
@@ -405,7 +407,7 @@ export default function Home() {
           <SectionTitle eyebrow="Projetos em destaque" title={<>Experiências pensadas para <span>ser lembradas.</span></>} text="Direções de produto que mostram como estratégia, identidade e tecnologia podem trabalhar como uma só coisa." />
           <div className="projectGrid editorialProjects">
             <Reveal className="projectCard projectWide"><div className="projectVisual realProjectVisual nieroProject"><Image src="/showcase/niero-desktop.png" alt="Página inicial do site Srta. Niero" fill sizes="(max-width: 900px) 100vw, 70vw" unoptimized /></div><div className="projectInfo"><div><span>WEBSITE · BRANDING</span><h3>Srta. Niero</h3></div><button type="button" onClick={() => { trackConversion("project_cta_clicked", { project: "Srta. Niero" }); setBriefingOpen(true); }} aria-label="Solicitar um site inspirado no projeto Srta. Niero">Quero um site assim <ArrowRight size={15} /></button></div></Reveal>
-            <Reveal className="projectCard carePortfolioCard"><div className="projectVisual careProjectVisual" role="img" aria-label="Demonstração da agenda semanal do Apollun Care"><div className="carePortfolioShell"><aside><strong>AC</strong><i /><i /><i /><i /><i /></aside><div className="carePortfolioContent"><header><div><span>Agenda clínica</span><b>Semana de 09 a 15 de novembro</b></div><em>+ Novo agendamento</em></header><div className="carePortfolioWeek"><span>SEG<strong>09</strong></span><span>TER<strong>10</strong></span><span>QUA<strong>11</strong></span><span>QUI<strong>12</strong></span><span>SEX<strong>13</strong></span></div><div className="carePortfolioSchedule"><small>09:00</small><div className="careAppointment appointmentOne"><b>09:30</b><span>Marina Souza</span></div><div className="careAppointment appointmentTwo"><b>11:00</b><span>Lucas Almeida</span></div><div className="careAppointment appointmentThree"><b>14:30</b><span>Bianca Martins</span></div></div></div></div></div><div className="projectInfo"><div><span>SISTEMA · AGENDA · GESTÃO CLÍNICA</span><h3>Apollun Care</h3></div><button type="button" onClick={() => { trackConversion("project_cta_clicked", { project: "Apollun Care" }); window.location.href = "/care"; }} aria-label="Conhecer a demonstração do Apollun Care">Conhecer a agenda <ArrowRight size={15} /></button></div></Reveal>
+            <Reveal className="projectCard carePortfolioCard"><div className="projectVisual careProjectVisual" role="img" aria-label="Demonstração da agenda semanal do Apollun Care"><div className="carePortfolioShell"><aside><strong>AC</strong><i /><i /><i /><i /><i /></aside><div className="carePortfolioContent"><header><div><span>Agenda clínica</span><b>Semana de 09 a 15 de novembro</b></div><em>+ Novo agendamento</em></header><div className="carePortfolioWeek"><span>SEG<strong>09</strong></span><span>TER<strong>10</strong></span><span>QUA<strong>11</strong></span><span>QUI<strong>12</strong></span><span>SEX<strong>13</strong></span></div><div className="carePortfolioSchedule"><small>09:00</small><div className="careAppointment appointmentOne"><b>09:30</b><span>Marina Souza</span></div><div className="careAppointment appointmentTwo"><b>11:00</b><span>Lucas Almeida</span></div><div className="careAppointment appointmentThree"><b>14:30</b><span>Bianca Martins</span></div></div></div></div></div><div className="projectInfo"><div><span>SISTEMA · AGENDA · GESTÃO CLÍNICA</span><h3>Apollun Care</h3></div><button type="button" onClick={() => { trackConversion("project_cta_clicked", { project: "Apollun Care" }); router.push("/care"); }} aria-label="Conhecer a demonstração do Apollun Care">Conhecer a agenda <ArrowRight size={15} /></button></div></Reveal>
             <Reveal className="projectCard"><div className="projectVisual realProjectVisual paolaProject"><Image src="/showcase/paola-desktop.png" alt="Página inicial do site da psicóloga Paola Milani" fill sizes="(max-width: 900px) 100vw, 70vw" unoptimized /></div><div className="projectInfo"><div><span>WEBSITE · PSICOLOGIA · UX/UI</span><h3>Paola Milani</h3></div><button type="button" onClick={() => { trackConversion("project_cta_clicked", { project: "Paola Milani" }); setBriefingOpen(true); }} aria-label="Solicitar um site inspirado no projeto Paola Milani">Quero um site assim <ArrowRight size={15} /></button></div></Reveal>
           </div>
         </div>
