@@ -32,12 +32,7 @@ import {
 import styles from "./care.module.css";
 
 type View =
-  | "dashboard"
-  | "agenda"
-  | "patients"
-  | "records"
-  | "finance"
-  | "messages";
+  "dashboard" | "agenda" | "patients" | "records" | "finance" | "messages";
 type CalendarMode = "week" | "month";
 type PaymentStatus = "paid" | "pending" | "courtesy" | "cancelled";
 type Appointment = {
@@ -345,13 +340,23 @@ export default function CareDemo() {
         <nav aria-label="Navegação da demonstração">
           {nav.map((item) => {
             const Icon = item.icon;
+            const isComingSoon = item.id === "finance";
             const badge =
               item.id === "agenda" ? String(appointments.length) : item.badge;
             return (
               <button
                 key={item.id}
-                className={view === item.id ? styles.active : ""}
+                className={`${view === item.id ? styles.active : ""} ${
+                  isComingSoon ? styles.comingSoonNav : ""
+                }`}
                 aria-current={view === item.id ? "page" : undefined}
+                aria-label={
+                  isComingSoon
+                    ? `${item.label}, disponível em breve`
+                    : undefined
+                }
+                disabled={isComingSoon}
+                title={isComingSoon ? "Disponível em breve" : undefined}
                 onClick={() => selectView(item.id)}
               >
                 <Icon size={19} />
