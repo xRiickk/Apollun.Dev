@@ -1,0 +1,312 @@
+.center {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background:
+    radial-gradient(ellipse at 80% 0%, #f1e7da 0, transparent 42%), #f7f5f1;
+  color: #20364e;
+  font-family: Arial, sans-serif;
+}
+.center > p {
+  color: #778393;
+}
+.authCard {
+  width: min(100%, 440px);
+  padding: clamp(26px, 6vw, 46px);
+  border: 1px solid #e6e1da;
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0 22px 65px #20364e12;
+}
+.brand {
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: #20364e;
+  text-decoration: none;
+}
+.brand span {
+  color: #9a8067;
+  font-weight: 600;
+}
+.eyebrow {
+  margin: 42px 0 12px;
+  color: #9a8067;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 800;
+}
+.authCard h1,
+.content h1 {
+  margin: 0;
+  font-size: clamp(30px, 5vw, 42px);
+  letter-spacing: -0.055em;
+  line-height: 1.05;
+}
+.muted {
+  color: #778393;
+  line-height: 1.65;
+  font-size: 14px;
+}
+.authCard form,
+.formCard {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.authCard label,
+.formCard label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  color: #566578;
+  font-size: 12px;
+  font-weight: 700;
+}
+.authCard input,
+.formCard input,
+.formCard select,
+.formCard textarea {
+  width: 100%;
+  border: 1px solid #e2ded8;
+  border-radius: 10px;
+  background: #fff;
+  color: #20364e;
+  padding: 12px;
+  font: inherit;
+  font-weight: 400;
+}
+.authCard input,
+.formCard input,
+.formCard select {
+  height: 44px;
+}
+.authCard input:focus,
+.formCard input:focus,
+.formCard select:focus,
+.formCard textarea:focus {
+  outline: 3px solid #cfb49655;
+  border-color: #b79d7e;
+}
+.authCard input[readonly] {
+  background: #f7f5f1;
+  color: #687585;
+}
+.authCard small {
+  margin-top: -9px;
+  color: #778393;
+  font-size: 11px;
+  line-height: 1.5;
+}
+.authCard form button,
+.formCard > button {
+  height: 48px;
+  border: 0;
+  border-radius: 11px;
+  background: #20364e;
+  color: white;
+  font-weight: 750;
+  cursor: pointer;
+}
+.authCard form button:disabled,
+.formCard > button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+.privacy {
+  margin: 22px 0 0;
+  text-align: center;
+  color: #9aa3ad;
+  font-size: 10px;
+}
+.error {
+  margin: 0;
+  color: #a33838;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.app {
+  min-height: 100svh;
+  background: #f7f5f1;
+  color: #20364e;
+  font-family: Arial, sans-serif;
+}
+.header {
+  height: 76px;
+  padding: 0 clamp(18px, 5vw, 64px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  border-bottom: 1px solid #e8e2da;
+}
+.header > div {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.user {
+  font-size: 12px;
+  color: #566578;
+}
+.logout {
+  border: 1px solid #e2ded8;
+  background: white;
+  border-radius: 9px;
+  padding: 9px 14px;
+  color: #20364e;
+  cursor: pointer;
+}
+.content {
+  max-width: 1280px;
+  margin: auto;
+  padding: clamp(28px, 5vw, 64px);
+}
+.content .eyebrow {
+  margin: 0 0 14px;
+}
+.content h1 {
+  font-size: clamp(34px, 5vw, 54px);
+}
+.content > .muted {
+  margin: 12px 0 32px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: minmax(290px, 0.82fr) minmax(0, 1.35fr);
+  gap: 18px;
+  align-items: start;
+}
+.formCard,
+.listCard {
+  padding: 24px;
+  border: 1px solid #e6e1da;
+  border-radius: 18px;
+  background: #fff;
+}
+.formCard h2,
+.listCard h2 {
+  margin: 0;
+  font-size: 17px;
+  letter-spacing: -0.03em;
+}
+.formRow {
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr;
+  gap: 12px;
+}
+.formCard textarea {
+  resize: vertical;
+}
+.listHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #eee9e3;
+}
+.listHead > span {
+  color: #778393;
+  font-size: 11px;
+}
+.empty {
+  padding: 38px 12px;
+  text-align: center;
+  color: #778393;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.listCard ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.listCard li {
+  display: flex;
+  gap: 13px;
+  padding: 17px 2px;
+  border-bottom: 1px solid #eee9e3;
+}
+.listCard li:last-child {
+  border: 0;
+}
+.listCard li > button {
+  flex: 0 0 28px;
+  height: 28px;
+  border: 1px solid #d9d0c5;
+  border-radius: 50%;
+  background: #f7f5f1;
+  color: #20364e;
+  cursor: pointer;
+}
+.listCard li > div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+.listCard li strong {
+  font-size: 14px;
+}
+.listCard li time,
+.listCard li p {
+  color: #778393;
+  font-size: 11px;
+  line-height: 1.5;
+}
+.listCard li p {
+  margin: 0;
+  white-space: pre-wrap;
+}
+.kind {
+  color: #9a8067;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 800;
+}
+.done strong {
+  text-decoration: line-through;
+  color: #8e989f;
+}
+.notice {
+  margin: 22px 0 0;
+  color: #8a939c;
+  font-size: 11px;
+  text-align: center;
+}
+@media (max-width: 850px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .formCard {
+    order: 1;
+  }
+  .listCard {
+    order: 2;
+  }
+}
+@media (max-width: 520px) {
+  .header {
+    height: 66px;
+  }
+  .header > div {
+    gap: 9px;
+  }
+  .user {
+    font-size: 10px;
+  }
+  .content {
+    padding: 30px 18px;
+  }
+  .formCard,
+  .listCard {
+    padding: 18px;
+  }
+  .formRow {
+    grid-template-columns: 1fr;
+  }
+}

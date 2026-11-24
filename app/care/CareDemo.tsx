@@ -2,7 +2,13 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import {
   ArrowLeft,
   BarChart3,
@@ -192,6 +198,12 @@ const isSameDate = (first: Date, second: Date) =>
   first.getMonth() === second.getMonth() &&
   first.getDate() === second.getDate();
 
+const subscribeToPreviewEnvironment = () => () => {};
+const getLocalPreviewSnapshot = () =>
+  window.location.hostname === "localhost" ||
+  window.location.hostname === "127.0.0.1";
+const getServerPreviewSnapshot = () => false;
+
 export default function CareDemo() {
   const [view, setView] = useState<View>("dashboard");
   const [menuOpen, setMenuOpen] = useState(false);
@@ -199,6 +211,11 @@ export default function CareDemo() {
   const [selected, setSelected] = useState<Appointment | null>(null);
   const [selectedPatient, setSelectedPatient] = useState<string | null>(null);
   const [storageReady, setStorageReady] = useState(false);
+  const isLocalPreview = useSyncExternalStore(
+    subscribeToPreviewEnvironment,
+    getLocalPreviewSnapshot,
+    getServerPreviewSnapshot,
+  );
   const [calendarMode, setCalendarMode] = useState<CalendarMode>("week");
   const [weekOffset, setWeekOffset] = useState(0);
   const [monthOffset, setMonthOffset] = useState(0);
@@ -341,22 +358,31 @@ export default function CareDemo() {
           {nav.map((item) => {
             const Icon = item.icon;
             const isComingSoon = item.id === "finance";
+            const isComingSoonLocked = isComingSoon && !isLocalPreview;
             const badge =
               item.id === "agenda" ? String(appointments.length) : item.badge;
             return (
               <button
                 key={item.id}
                 className={`${view === item.id ? styles.active : ""} ${
-                  isComingSoon ? styles.comingSoonNav : ""
+                  isComingSoonLocked ? styles.comingSoonNav : ""
                 }`}
                 aria-current={view === item.id ? "page" : undefined}
                 aria-label={
                   isComingSoon
-                    ? `${item.label}, disponível em breve`
+                    ? isLocalPreview
+                      ? `${item.label}, prévia local`
+                      : `${item.label}, disponível em breve`
                     : undefined
                 }
-                disabled={isComingSoon}
-                title={isComingSoon ? "Disponível em breve" : undefined}
+                disabled={isComingSoonLocked}
+                title={
+                  isComingSoon
+                    ? isLocalPreview
+                      ? "Abrir prévia local"
+                      : "Disponível em breve"
+                    : undefined
+                }
                 onClick={() => selectView(item.id)}
               >
                 <Icon size={19} />
