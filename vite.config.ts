@@ -22,6 +22,18 @@ const localBindingConfig = {
         },
       ]
     : [],
+  ratelimits: [
+    {
+      name: "NIERO_LOGIN_IP_LIMITER",
+      namespace_id: "72611023841",
+      simple: { limit: 20, period: 60 as const },
+    },
+    {
+      name: "NIERO_LOGIN_ACCOUNT_LIMITER",
+      namespace_id: "72611023842",
+      simple: { limit: 5, period: 60 as const },
+    },
+  ],
   r2_buckets: r2
     ? [
         {

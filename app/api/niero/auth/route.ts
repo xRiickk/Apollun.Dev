@@ -3,6 +3,7 @@ import {
   SESSION_COOKIE,
   getNieroDatabase as database,
   getNieroUser as getUser,
+  isNieroLoginRateLimited,
   readNieroSessionCookie as readCookie,
   sha256,
   toHex,
@@ -72,6 +73,16 @@ export async function POST(request: Request) {
       password?: string;
       invitation?: string;
     };
+    if (
+      (payload.action === "login" || payload.action === "setup") &&
+      (await isNieroLoginRateLimited(payload.email ?? "", request))
+    ) {
+      return json(
+        { error: "Muitas tentativas. Aguarde um minuto e tente novamente." },
+        429,
+        { "Retry-After": "60", "Cache-Control": "no-store" },
+      );
+    }
     const db = database();
 
     if (payload.action === "setup") {

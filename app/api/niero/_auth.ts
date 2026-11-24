@@ -11,6 +11,27 @@ export function getNieroDatabase(): D1Database {
   return db;
 }
 
+export async function isNieroLoginRateLimited(email: string, request: Request) {
+  const bindings = env as {
+    NIERO_LOGIN_IP_LIMITER?: RateLimit;
+    NIERO_LOGIN_ACCOUNT_LIMITER?: RateLimit;
+  };
+  const ipLimiter = bindings.NIERO_LOGIN_IP_LIMITER;
+  const accountLimiter = bindings.NIERO_LOGIN_ACCOUNT_LIMITER;
+  if (!ipLimiter || !accountLimiter)
+    throw new Error("Login rate-limit bindings are unavailable");
+
+  const normalizedEmail = email.trim().toLowerCase();
+  const emailKey = await sha256(normalizedEmail);
+  const clientIp = request.headers.get("CF-Connecting-IP")?.trim() || "unknown";
+  const [ip, account] = await Promise.all([
+    ipLimiter.limit({ key: `niero-login:${clientIp}` }),
+    accountLimiter.limit({ key: `niero-login:${emailKey}` }),
+  ]);
+
+  return !ip.success || !account.success;
+}
+
 export function readNieroSessionCookie(request: Request) {
   const cookie = request.headers.get("cookie") ?? "";
   const part = cookie
